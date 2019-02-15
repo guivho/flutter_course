@@ -1,13 +1,19 @@
 import 'package:flutter/material.dart';
 import './products.dart';
+import './product_control.dart';
 
 class ProductManager extends StatefulWidget {
-  State<StatefulWidget> createState() {
-    return _ProductManagerState();
+  final String startingProduct;
+
+  ProductManager({this.startingProduct = 'Sweets Tester'}) {
+    print('[ProductManager] Constructor');
   }
 
-  final List<String> products;
-  ProductManager(this.products);
+  @override
+  State<StatefulWidget> createState() {
+    print('[ProductManager] createState()');
+    return _ProductManagerState();
+  }
 }
 
 class _ProductManagerState extends State<ProductManager> {
@@ -15,8 +21,21 @@ class _ProductManagerState extends State<ProductManager> {
 
   @override
   void initState() {
+    print('[ProductManager State] initState()');
     super.initState();
-    _products = widget.products;
+    _products.add(widget.startingProduct);
+  }
+
+  @override
+  void didUpdateWidget(ProductManager oldWidget) {
+    print('[ProductManager State] didUpdateWidget()');
+    super.didUpdateWidget(oldWidget);
+  }
+
+  void _addProduct(String product) {
+    setState(() {
+      _products.add(product);
+    });
   }
 
   @override
@@ -25,14 +44,7 @@ class _ProductManagerState extends State<ProductManager> {
       children: <Widget>[
         Container(
           margin: EdgeInsets.all(10.0),
-          child: RaisedButton(
-            onPressed: () {
-              setState(() {
-                _products.add('Tester ${_products.length + 1}');
-              });
-            },
-            child: Text('Add Product'),
-          ),
+          child: ProductControl(_addProduct),
         ),
         Products(_products),
       ],

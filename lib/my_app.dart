@@ -2,14 +2,15 @@ import 'package:flutter/material.dart';
 import './product_manager.dart';
 
 class MyApp extends StatelessWidget {
-  final List<String> _products = ['Food tester'];
+  final String _product = 'Food tester';
   Widget build(BuildContext context) {
+    print('[MyApp] build');
     return MaterialApp(
       home: Scaffold(
         appBar: AppBar(
           title: Text('EasyList'),
         ),
-        body: ProductManager(_products),
+        body: ProductManager(startingProduct: _product),
       ),
     );
   }
