@@ -1,4 +1,10 @@
 import 'package:flutter/material.dart';
-import './my_app.dart';
+import './app.dart';
+// import 'package:flutter/rendering.dart';
 
-void main() => runApp(MyApp());
+void main() {
+  // debugPaintSizeEnabled = true;
+  // debugPaintBaselinesEnabled = true;
+  // debugPaintPointersEnabled = true;
+  runApp(App());
+}

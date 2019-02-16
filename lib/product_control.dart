@@ -9,7 +9,10 @@ class ProductControl extends StatelessWidget {
   Widget build(BuildContext context) {
     return RaisedButton(
       onPressed: () {
-        _addProduct('Sweets');
+        _addProduct({
+          'title': 'Sweets ${DateTime.now()}',
+          'imageUrl': 'assets/food.jpg',
+        });
       },
       child: Text('Add Product'),
     );
