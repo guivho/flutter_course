@@ -1,16 +1,17 @@
 import 'package:flutter/material.dart';
-import './../product_manager.dart';
-import './manage_products_page.dart';
+import './products_page.dart';
 
-class ProductsPage extends StatelessWidget {
+class ManageProductsPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return new Scaffold(
       drawer: buildDrawer(context),
       appBar: AppBar(
-        title: Text('EasyList'),
+        title: Text('Manage Products'),
       ),
-      body: ProductManager(),
+      body: Center(
+        child: Text('To be developed'),
+      ),
     );
   }
 
@@ -21,20 +22,19 @@ class ProductsPage extends StatelessWidget {
           AppBar(
               automaticallyImplyLeading: false, // no hamburger here!
               title: Text('Choose')),
-          buildManageProductsTile(context),
+          buildManageProductsPageTile(context),
         ],
       ),
     );
   }
 
-  ListTile buildManageProductsTile(BuildContext context) {
+  ListTile buildManageProductsPageTile(BuildContext context) {
     return ListTile(
-      title: Text('Manage Products'),
+      title: Text('Products'),
       onTap: () {
         Navigator.pushReplacement(
           context,
-          MaterialPageRoute(
-              builder: (BuildContext context) => ManageProductsPage()),
+          MaterialPageRoute(builder: (BuildContext context) => ProductsPage()),
         );
       },
     );
