@@ -25,7 +25,6 @@ class _AppState extends State<App> {
         primarySwatch: Colors.deepOrange,
         accentColor: Colors.red,
       ),
-      initialRoute: AUTHROUTE,
       // home: AuthPage(),
       routes: defineRoutes(context, _products, _addProduct, _deleteProduct),
       onGenerateRoute: (RouteSettings settings) {

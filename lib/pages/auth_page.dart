@@ -9,6 +9,7 @@ class AuthPage extends StatefulWidget {
 class _AuthPageState extends State<AuthPage> {
   String _email = '';
   String _password = '';
+  bool _acceptTerms = false;
 
   @override
   Widget build(BuildContext context) {
@@ -23,7 +24,14 @@ class _AuthPageState extends State<AuthPage> {
           children: <Widget>[
             buildEmailField(),
             buildPasswordField(),
+            // Switch(
+            //   value: true,
+            //   onChanged: (bool onValue) {},
+            // ),
+            buildAcceptTerms(),
+            SizedBox(height: 10.0),
             buildLoginButton(context),
+            SizedBox(height: 10.0),
             Text('$EMAIL: $_email'),
             Text('$PASSWORD: $_password'),
           ],
@@ -32,7 +40,19 @@ class _AuthPageState extends State<AuthPage> {
     );
   }
 
-  buildEmailField() {
+  SwitchListTile buildAcceptTerms() {
+    return SwitchListTile(
+      value: _acceptTerms,
+      onChanged: (bool onValue) {
+        setState(() {
+          _acceptTerms = onValue;
+        });
+      },
+      title: Text('Accept terms?'),
+    );
+  }
+
+  TextField buildEmailField() {
     return TextField(
       decoration: InputDecoration(labelText: '$EMAIL:'),
       keyboardType: TextInputType.emailAddress,
@@ -44,7 +64,7 @@ class _AuthPageState extends State<AuthPage> {
     );
   }
 
-  buildPasswordField() {
+  TextField buildPasswordField() {
     return TextField(
       decoration: InputDecoration(labelText: '$PASSWORD:'),
       obscureText: true,
