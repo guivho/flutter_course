@@ -22,7 +22,7 @@ class _AppState extends State<App> {
       theme: ThemeData(
         brightness: Brightness.light,
         primarySwatch: Colors.deepOrange,
-        accentColor: Colors.deepPurple,
+        accentColor: Colors.red,
       ),
       // home: AuthPage(), (conflict with route '/')
       routes: defineRoutes(context, _products, _addProduct, _deleteProduct),

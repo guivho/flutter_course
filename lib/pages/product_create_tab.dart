@@ -24,6 +24,7 @@ class _ProductCreateTabState extends State<ProductCreateTab> {
           buildTitleField(),
           buildDescriptionField(),
           buildPriceField(),
+          SizedBox(height: 10.0),
           buildSubmitButton(),
         ],
       ),
@@ -33,6 +34,7 @@ class _ProductCreateTabState extends State<ProductCreateTab> {
   buildSubmitButton() {
     return RaisedButton(
       child: Text('Save'),
+      color: Theme.of(context).accentColor,
       onPressed: () {
         final Map<String, dynamic> product = {
           PRODUCTSTITLE: _title,
@@ -41,7 +43,7 @@ class _ProductCreateTabState extends State<ProductCreateTab> {
           PRODUCTSIMAGEURL: 'assets/food.jpg',
         };
         widget._addProduct(product);
-        // Navigator.pushNamed(context, PRODUCTSROUTE);
+        Navigator.pushReplacementNamed(context, PRODUCTSROUTE);
       },
     );
   }
