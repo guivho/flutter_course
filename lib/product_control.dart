@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import './utils/constants.dart';
 
 class ProductControl extends StatelessWidget {
   final Function _addProduct;
@@ -10,8 +11,8 @@ class ProductControl extends StatelessWidget {
     return RaisedButton(
       onPressed: () {
         _addProduct({
-          'title': 'Sweets ${DateTime.now()}',
-          'imageUrl': 'assets/food.jpg',
+          PRODUCTSTITLE: 'Sweets ${DateTime.now()}',
+          PRODUCTSIMAGEURL: 'assets/food.jpg',
         });
       },
       child: Text('Add Product'),

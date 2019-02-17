@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import './pages/product_page.dart';
+import './utils/constants.dart';
 
 class ProductList extends StatelessWidget {
   final List<Map<String, String>> products;
@@ -13,29 +13,28 @@ class ProductList extends StatelessWidget {
     return Card(
       child: Column(
         children: <Widget>[
-          Image.asset(products[index]['imageUrl']),
-          Text(products[index]['title']),
+          Image.asset(products[index][PRODUCTSIMAGEURL]),
+          Text(products[index][PRODUCTSTITLE]),
           ButtonBar(
             alignment: MainAxisAlignment.center,
             children: <Widget>[
-              FlatButton(
-                child: Text('Details'),
-                onPressed: () => Navigator.push<bool>(
-                      context,
-                      MaterialPageRoute(
-                        builder: (BuildContext context) => ProductPage(
-                              products[index]['title'],
-                              products[index]['imageUrl'],
-                            ),
-                      ),
-                    ).then((bool doDelete) {
-                      if (doDelete) deleteProduct(index);
-                    }),
-              )
+              buildDetailsButton(context, index),
             ],
           ),
         ],
       ),
+    );
+  }
+
+  FlatButton buildDetailsButton(BuildContext context, int index) {
+    return FlatButton(
+      child: Text('Details'),
+      onPressed: () => Navigator.pushNamed<bool>(
+            context,
+            '$PRODUCTROUTE/$index',
+          ).then((bool doDelete) {
+            if (doDelete) deleteProduct(index);
+          }),
     );
   }
 
