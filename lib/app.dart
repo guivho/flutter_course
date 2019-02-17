@@ -29,11 +29,12 @@ class _AppState extends State<App> {
       onGenerateRoute: (RouteSettings settings) {
         return defineOnGenerateRoute(context, settings);
       },
-      // onUnknownRoute: (RouteSettings settings) {
-      //   return MaterialPageRoute(
-      //       builder: (BuildContext context) =>
-      //           ProductsPage(_products, _addProduct, _deleteProduct));
-      // },
+      onUnknownRoute: (RouteSettings settings) {
+        print('CAVE: unknown route ${settings.name}');
+        return MaterialPageRoute(
+            builder: (BuildContext context) =>
+                ProductsPage(_products, _addProduct, _deleteProduct));
+      },
     );
   }
 
