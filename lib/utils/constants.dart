@@ -6,3 +6,5 @@ const String PRODUCTSROUTE = '/';
 
 const String PRODUCTSTITLE = 'title';
 const String PRODUCTSIMAGEURL = 'imageUrl';
+const String PRODUCTSPRICE = 'price';
+const String PRODUCTSDESCRIPTION = 'description';

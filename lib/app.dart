@@ -11,7 +11,7 @@ class App extends StatefulWidget {
 }
 
 class _AppState extends State<App> {
-  final List<Map<String, String>> _products = [];
+  final List<Map<String, dynamic>> _products = [];
 
   @override
   //final String _product = 'Food tester';
@@ -32,13 +32,12 @@ class _AppState extends State<App> {
       onUnknownRoute: (RouteSettings settings) {
         print('CAVE: unknown route ${settings.name}');
         return MaterialPageRoute(
-            builder: (BuildContext context) =>
-                ProductsPage(_products, _addProduct, _deleteProduct));
+            builder: (BuildContext context) => ProductsPage(_products));
       },
     );
   }
 
-  void _addProduct(Map<String, String> product) {
+  void _addProduct(Map<String, dynamic> product) {
     setState(() {
       _products.add(product);
     });
@@ -69,13 +68,13 @@ class _AppState extends State<App> {
 
   Map<String, WidgetBuilder> defineRoutes(
       BuildContext context,
-      List<Map<String, String>> products,
+      List<Map<String, dynamic>> products,
       Function addProduct,
       Function deleteProduct) {
     return {
-      ADMINROUTE: (BuildContext context) => ProductsAdminPage(),
-      PRODUCTSROUTE: (BuildContext context) =>
-          ProductsPage(products, addProduct, deleteProduct),
+      ADMINROUTE: (BuildContext context) =>
+          ProductsAdminPage(addProduct, deleteProduct),
+      PRODUCTSROUTE: (BuildContext context) => ProductsPage(products),
     };
   }
 }
