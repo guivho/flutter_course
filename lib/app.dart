@@ -4,6 +4,7 @@ import './utils/constants.dart';
 import './pages/products_admin_page.dart';
 import './pages/products_page.dart';
 import './pages/product_page.dart';
+import './pages/auth_page.dart';
 
 class App extends StatefulWidget {
   @override
@@ -24,7 +25,8 @@ class _AppState extends State<App> {
         primarySwatch: Colors.deepOrange,
         accentColor: Colors.red,
       ),
-      // home: AuthPage(), (conflict with route '/')
+      initialRoute: AUTHROUTE,
+      // home: AuthPage(),
       routes: defineRoutes(context, _products, _addProduct, _deleteProduct),
       onGenerateRoute: (RouteSettings settings) {
         return defineOnGenerateRoute(context, settings);
@@ -75,6 +77,7 @@ class _AppState extends State<App> {
       ADMINROUTE: (BuildContext context) =>
           ProductsAdminPage(addProduct, deleteProduct),
       PRODUCTSROUTE: (BuildContext context) => ProductsPage(products),
+      AUTHROUTE: (BuildContext context) => AuthPage(),
     };
   }
 }
