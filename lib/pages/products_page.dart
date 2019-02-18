@@ -13,6 +13,12 @@ class ProductsPage extends StatelessWidget {
       drawer: buildDrawer(context),
       appBar: AppBar(
         title: Text('Products'),
+        actions: <Widget>[
+          IconButton(
+            icon: Icon(Icons.favorite),
+            onPressed: () {},
+          ),
+        ],
       ),
       body: ProductManager(_products),
     );
@@ -33,6 +39,7 @@ class ProductsPage extends StatelessWidget {
 
   ListTile buildManageProductsTile(BuildContext context) {
     return ListTile(
+      leading: Icon(Icons.edit),
       title: Text('Products Admin'),
       onTap: () {
         Navigator.pushReplacementNamed(context, ADMINROUTE);

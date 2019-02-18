@@ -61,6 +61,7 @@ class ProductsAdminPage extends StatelessWidget {
 
   ListTile buildManageProductsPageTile(BuildContext context) {
     return ListTile(
+      leading: Icon(Icons.shop),
       title: Text('Products'),
       onTap: () {
         Navigator.pushReplacementNamed(context, PRODUCTSROUTE);

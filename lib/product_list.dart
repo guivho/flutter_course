@@ -20,6 +20,7 @@ class ProductList extends StatelessWidget {
             alignment: MainAxisAlignment.center,
             children: <Widget>[
               buildDetailsButton(context, index),
+              buildFavoriteButton(context, index),
             ],
           ),
         ],
@@ -84,9 +85,29 @@ class ProductList extends StatelessWidget {
     );
   }
 
-  FlatButton buildDetailsButton(BuildContext context, int index) {
-    return FlatButton(
-      child: Text('Details'),
+  // Row buildIconsRow(BuildContext context, int index) {
+  //   return Row(
+  //     children: <Widget>[
+  //       buildDetailsButton(context, index),
+  //       buildFavoriteButton(context, index),
+  //     ],
+  //   );
+  // }
+
+  IconButton buildFavoriteButton(BuildContext context, int index) {
+    return IconButton(
+      icon: Icon(Icons.favorite_border),
+      color: Theme.of(context).primaryColor,
+      iconSize: 50.0,
+      onPressed: () => {},
+    );
+  }
+
+  IconButton buildDetailsButton(BuildContext context, int index) {
+    return IconButton(
+      icon: Icon(Icons.info),
+      iconSize: 50.0,
+      color: Theme.of(context).primaryColor,
       onPressed: () => Navigator.pushNamed<bool>(
             context,
             '$PRODUCTROUTE/$index',
