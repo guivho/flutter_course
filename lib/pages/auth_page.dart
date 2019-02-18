@@ -18,43 +18,66 @@ class _AuthPageState extends State<AuthPage> {
         title: Text('Login'),
       ),
       body: Center(
-          child: Container(
-        margin: EdgeInsets.all(15.0),
-        child: Column(
-          children: <Widget>[
-            buildEmailField(),
-            buildPasswordField(),
-            // Switch(
-            //   value: true,
-            //   onChanged: (bool onValue) {},
-            // ),
-            buildAcceptTerms(),
-            SizedBox(height: 10.0),
-            buildLoginButton(context),
-            SizedBox(height: 10.0),
-            Text('$EMAIL: $_email'),
-            Text('$PASSWORD: $_password'),
-          ],
+        child: Container(
+          decoration: BoxDecoration(
+            image: DecorationImage(
+              fit: BoxFit.cover,
+              colorFilter: ColorFilter.mode(
+                  Colors.black.withOpacity(0.4), BlendMode.dstATop),
+              image: AssetImage('assets/background.jpg'),
+            ),
+          ),
+          padding: EdgeInsets.all(15.0),
+          child: Center(
+            child: SingleChildScrollView(
+              child: Column(
+                children: <Widget>[
+                  buildEmailField(),
+                  SizedBox(height: 10.0),
+                  buildPasswordField(),
+                  SizedBox(height: 10.0),
+                  buildAcceptTerms(),
+                  SizedBox(height: 10.0),
+                  buildLoginButton(context),
+                  SizedBox(height: 10.0),
+                  // Text('$EMAIL: $_email'),
+                  // Text('$PASSWORD: $_password'),
+                ],
+              ),
+            ),
+          ),
         ),
-      )),
+      ),
     );
   }
 
-  SwitchListTile buildAcceptTerms() {
-    return SwitchListTile(
-      value: _acceptTerms,
-      onChanged: (bool onValue) {
-        setState(() {
-          _acceptTerms = onValue;
-        });
-      },
-      title: Text('Accept terms?'),
+  buildAcceptTerms() {
+    return DecoratedBox(
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.all(
+          Radius.circular(5.0),
+        ),
+      ),
+      child: SwitchListTile(
+        value: _acceptTerms,
+        onChanged: (bool onValue) {
+          setState(() {
+            _acceptTerms = onValue;
+          });
+        },
+        title: Text('Accept terms?'),
+      ),
     );
   }
 
   TextField buildEmailField() {
     return TextField(
-      decoration: InputDecoration(labelText: '$EMAIL:'),
+      decoration: InputDecoration(
+        labelText: '$EMAIL:',
+        filled: true,
+        fillColor: Colors.white,
+      ),
       keyboardType: TextInputType.emailAddress,
       onChanged: (String value) {
         setState(() {
@@ -66,7 +89,11 @@ class _AuthPageState extends State<AuthPage> {
 
   TextField buildPasswordField() {
     return TextField(
-      decoration: InputDecoration(labelText: '$PASSWORD:'),
+      decoration: InputDecoration(
+        labelText: '$PASSWORD:',
+        filled: true,
+        fillColor: Colors.white,
+      ),
       obscureText: true,
       onChanged: (String value) {
         setState(() {
@@ -78,6 +105,7 @@ class _AuthPageState extends State<AuthPage> {
 
   RaisedButton buildLoginButton(BuildContext context) {
     return RaisedButton(
+      color: Theme.of(context).primaryColor,
       child: Text('Login'),
       onPressed: () {
         Navigator.pushReplacementNamed(context, PRODUCTSROUTE);
