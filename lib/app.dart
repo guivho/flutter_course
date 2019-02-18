@@ -24,6 +24,7 @@ class _AppState extends State<App> {
         brightness: Brightness.light,
         primarySwatch: Colors.deepOrange,
         accentColor: Colors.red,
+        // fontFamily: 'Oswald',
       ),
       // home: AuthPage(),
       routes: defineRoutes(context, _products, _addProduct, _deleteProduct),

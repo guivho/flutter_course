@@ -31,7 +31,6 @@ class ProductPage extends StatelessWidget {
               child: RaisedButton(
                 color: Theme.of(context).accentColor,
                 child: Text('DELETE'),
-                // onPressed: () => Navigator.pop(context, true),
                 onPressed: () => _showWarningDialog(context),
               ),
             ),
@@ -59,7 +58,7 @@ class ProductPage extends StatelessWidget {
               child: Text('DO DELETE'),
               onPressed: () {
                 Navigator.pop(context); // dismiss the dialog
-                Navigator.pop(context, true); // do back to delete
+                Navigator.pop(context, true); // go back to delete
               },
             ),
           ],
