@@ -5,6 +5,7 @@ import './pages/products_admin_page.dart';
 import './pages/products_page.dart';
 import './pages/product_page.dart';
 import './pages/auth_page.dart';
+import './models/product.dart';
 
 class App extends StatefulWidget {
   @override
@@ -12,7 +13,7 @@ class App extends StatefulWidget {
 }
 
 class _AppState extends State<App> {
-  final List<Map<String, dynamic>> _products = [];
+  final List<Product> _products = [];
 
   @override
   //final String _product = 'Food tester';
@@ -39,8 +40,9 @@ class _AppState extends State<App> {
     );
   }
 
-  void _addProduct(Map<String, dynamic> product) {
+  void _addProduct(Product product) {
     setState(() {
+      product.id = _products.length;
       _products.add(product);
     });
     print(_products);
@@ -60,23 +62,19 @@ class _AppState extends State<App> {
       final int index = int.parse(pathElements[2]);
       return MaterialPageRoute<bool>(
         builder: (BuildContext context) => ProductPage(
-              _products[index][PRODUCTSTITLE],
-              _products[index][PRODUCTSIMAGEURL],
+              _products[index],
             ),
       );
     }
     return null;
   }
 
-  Map<String, WidgetBuilder> defineRoutes(
-      BuildContext context,
-      List<Map<String, dynamic>> products,
-      Function addProduct,
-      Function deleteProduct) {
+  Map<String, WidgetBuilder> defineRoutes(BuildContext context,
+      List<Product> products, Function addProduct, Function deleteProduct) {
     return {
       ADMINROUTE: (BuildContext context) =>
           ProductsAdminPage(addProduct, deleteProduct),
-      PRODUCTSROUTE: (BuildContext context) => ProductsPage(products),
+      PRODUCTSROUTE: (BuildContext context) => ProductsPage(_products),
       AUTHROUTE: (BuildContext context) => AuthPage(),
     };
   }

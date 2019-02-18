@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../utils/constants.dart';
+import '../models/product.dart';
 
 class ProductCreateTab extends StatefulWidget {
   final Function _addProduct;
@@ -11,9 +12,7 @@ class ProductCreateTab extends StatefulWidget {
 }
 
 class _ProductCreateTabState extends State<ProductCreateTab> {
-  String _title = '';
-  String _description = '';
-  double _price = 0.0;
+  Product _product = Product();
 
   @override
   Widget build(BuildContext context) {
@@ -36,13 +35,8 @@ class _ProductCreateTabState extends State<ProductCreateTab> {
       child: Text('Save'),
       color: Theme.of(context).accentColor,
       onPressed: () {
-        final Map<String, dynamic> product = {
-          PRODUCTSTITLE: _title,
-          PRODUCTSDESCRIPTION: _description,
-          PRODUCTSPRICE: _price,
-          PRODUCTSIMAGEURL: 'assets/food.jpg',
-        };
-        widget._addProduct(product);
+        _product.imageUrl = 'assets/food.jpg';
+        widget._addProduct(_product);
         Navigator.pushReplacementNamed(context, PRODUCTSROUTE);
       },
     );
@@ -53,7 +47,7 @@ class _ProductCreateTabState extends State<ProductCreateTab> {
       decoration: InputDecoration(labelText: 'Title:'),
       onChanged: (String value) {
         setState(() {
-          _title = value;
+          _product.title = value;
         });
       },
     );
@@ -66,7 +60,7 @@ class _ProductCreateTabState extends State<ProductCreateTab> {
       maxLength: 256,
       onChanged: (String value) {
         setState(() {
-          _description = value;
+          _product.description = value;
         });
       },
     );
@@ -78,7 +72,7 @@ class _ProductCreateTabState extends State<ProductCreateTab> {
       keyboardType: TextInputType.number,
       onChanged: (String value) {
         setState(() {
-          _price = double.parse(value);
+          _product.price = double.parse(value);
         });
       },
     );
