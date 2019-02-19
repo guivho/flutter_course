@@ -16,9 +16,13 @@ class _ProductCreateTabState extends State<ProductCreateTab> {
 
   @override
   Widget build(BuildContext context) {
+    final double mediaWidth = MediaQuery.of(context).size.width;
+    final targetWidth = mediaWidth > 368.0 ? 368.0 : mediaWidth * 0.95;
+    final targetPadding = (mediaWidth - targetWidth) / 2;
     return Container(
       margin: EdgeInsets.all(10.0),
       child: ListView(
+        padding: EdgeInsets.symmetric(horizontal: targetPadding),
         children: <Widget>[
           _buildTitleField(),
           _buildDescriptionField(),
@@ -33,7 +37,6 @@ class _ProductCreateTabState extends State<ProductCreateTab> {
   _buildSubmitButton() {
     return RaisedButton(
       child: Text('Save'),
-      color: Theme.of(context).accentColor,
       onPressed: _submitForm,
     );
   }

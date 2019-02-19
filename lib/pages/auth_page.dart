@@ -24,6 +24,8 @@ class _AuthPageState extends State<AuthPage> {
 
   @override
   Widget build(BuildContext context) {
+    final double mediaWidth = MediaQuery.of(context).size.width;
+    final targetWidth = mediaWidth > 368.0 ? 368.0 : mediaWidth * 0.95;
     return new Scaffold(
       appBar: AppBar(
         title: Text('Login'),
@@ -34,19 +36,23 @@ class _AuthPageState extends State<AuthPage> {
           padding: EdgeInsets.all(15.0),
           child: Center(
             child: SingleChildScrollView(
-              child: Column(
-                children: <Widget>[
-                  _buildEmailField(),
-                  SizedBox(height: 10.0),
-                  _buildPasswordField(),
-                  SizedBox(height: 10.0),
-                  _buildAcceptTerms(),
-                  SizedBox(height: 10.0),
-                  _buildLoginButton(context),
-                  SizedBox(height: 10.0),
-                  // Text('$EMAIL: $_email'),
-                  // Text('$PASSWORD: $_password'),
-                ],
+              child: Container(
+                width: targetWidth,
+                child: Column(
+                  children: <Widget>[
+                    _buildEmailField(),
+                    SizedBox(height: 10.0),
+                    _buildPasswordField(),
+                    SizedBox(height: 10.0),
+                    _buildAcceptTerms(),
+                    SizedBox(height: 10.0),
+                    _buildLoginButton(),
+                    SizedBox(height: 10.0),
+                    // _buildHomeCookedButton(),
+                    // Text('$EMAIL: $_email'),
+                    // Text('$PASSWORD: $_password'),
+                  ],
+                ),
               ),
             ),
           ),
@@ -107,13 +113,23 @@ class _AuthPageState extends State<AuthPage> {
     );
   }
 
-  RaisedButton _buildLoginButton(BuildContext context) {
+  RaisedButton _buildLoginButton() {
     return RaisedButton(
-      color: Theme.of(context).primaryColor,
       child: Text('Login'),
       onPressed: _submitForm,
     );
   }
+
+  // GestureDetector _buildHomeCookedButton() {
+  //   return GestureDetector(
+  //     onTap: _submitForm,
+  //     child: Container(
+  //       color: Colors.green,
+  //       padding: EdgeInsets.all(5.0),
+  //       child: Text('Home cooked button'),
+  //     ),
+  //   );
+  // }
 
   void _submitForm() {
     Navigator.pushReplacementNamed(context, PRODUCTSROUTE);
