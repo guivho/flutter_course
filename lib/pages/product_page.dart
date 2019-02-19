@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../models/product.dart';
-import '../widgets/product_item.dart';
+import '../widgets/products/product_card.dart';
+import '../utils/constants.dart';
 
 class ProductPage extends StatelessWidget {
   final Product _product;
@@ -18,7 +19,7 @@ class ProductPage extends StatelessWidget {
         appBar: AppBar(
           title: Text(_product.title),
         ),
-        body: ProductItem(_product, false),
+        body: ProductCard(_product, CardType.info),
       ),
     );
   }

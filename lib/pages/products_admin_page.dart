@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
-import './product_create_tab.dart';
-import './product_list_tab.dart';
+import './tabs/product_create_tab.dart';
+import './tabs/product_list_tab.dart';
 import '../utils/constants.dart';
+import './../widgets/ui_elements/left_drawer.dart';
 
 class ProductsAdminPage extends StatelessWidget {
   final Function _addProduct;
@@ -19,7 +20,7 @@ class ProductsAdminPage extends StatelessWidget {
 
   Widget buildScaffold(BuildContext context) {
     return Scaffold(
-      drawer: buildDrawer(context),
+      drawer: LeftDrawer(DrawerType.fromAdminToList),
       appBar: AppBar(
         title: Text('Products Admin'),
         bottom: buildTabBar(),
@@ -43,29 +44,6 @@ class ProductsAdminPage extends StatelessWidget {
         ProductCreateTab(_addProduct),
         ProductListTab(),
       ],
-    );
-  }
-
-  Widget buildDrawer(BuildContext context) {
-    return Drawer(
-      child: Column(
-        children: <Widget>[
-          AppBar(
-              automaticallyImplyLeading: false, // no hamburger here!
-              title: Text('Choose')),
-          buildManageProductsPageTile(context),
-        ],
-      ),
-    );
-  }
-
-  ListTile buildManageProductsPageTile(BuildContext context) {
-    return ListTile(
-      leading: Icon(Icons.shop),
-      title: Text('Products'),
-      onTap: () {
-        Navigator.pushReplacementNamed(context, PRODUCTSROUTE);
-      },
     );
   }
 }

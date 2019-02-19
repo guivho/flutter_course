@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
-import './../product_manager.dart';
 import '../utils/constants.dart';
 import '../models/product.dart';
+import './../widgets/products/product_list.dart';
+import '../widgets/ui_elements/left_drawer.dart';
 
 class ProductsPage extends StatelessWidget {
   final List<Product> _products;
@@ -11,7 +12,7 @@ class ProductsPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      drawer: buildDrawer(context),
+      drawer: LeftDrawer(DrawerType.fromListToAdmin),
       appBar: AppBar(
         title: Text('Products'),
         actions: <Widget>[
@@ -21,30 +22,7 @@ class ProductsPage extends StatelessWidget {
           ),
         ],
       ),
-      body: ProductManager(_products),
-    );
-  }
-
-  Widget buildDrawer(BuildContext context) {
-    return Drawer(
-      child: Column(
-        children: <Widget>[
-          AppBar(
-              automaticallyImplyLeading: false, // no hamburger here!
-              title: Text('Choose')),
-          buildManageProductsTile(context),
-        ],
-      ),
-    );
-  }
-
-  ListTile buildManageProductsTile(BuildContext context) {
-    return ListTile(
-      leading: Icon(Icons.edit),
-      title: Text('Products Admin'),
-      onTap: () {
-        Navigator.pushReplacementNamed(context, ADMINROUTE);
-      },
+      body: ProductList(_products),
     );
   }
 }

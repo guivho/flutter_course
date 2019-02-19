@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import './widgets/product_item.dart';
-import './models/product.dart';
+import './product_card.dart';
+import './../../models/product.dart';
+import '../../utils/constants.dart';
 
 class ProductList extends StatelessWidget {
   final List<Product> products;
@@ -11,7 +12,7 @@ class ProductList extends StatelessWidget {
   }
 
   Widget _buildProductItem(BuildContext context, int index) {
-    return ProductItem(products[index], true);
+    return ProductCard(products[index], CardType.list);
   }
 
   Widget _buildProductList() {

@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
-import '../utils/constants.dart';
-import '../models/product.dart';
+import '../../utils/constants.dart';
+import '../../models/product.dart';
+import './price_tag.dart';
+import '../ui_elements/title_default.dart';
+import './address_tag.dart';
 
-class ProductItem extends StatelessWidget {
-  final bool displayOnly;
+class ProductCard extends StatelessWidget {
+  final CardType cardType;
   final Product product;
 
-  ProductItem(this.product, this.displayOnly);
+  ProductCard(this.product, this.cardType);
 
   @override
   Widget build(BuildContext context) {
@@ -19,7 +22,7 @@ class ProductItem extends StatelessWidget {
         children: <Widget>[
           Image.asset(product.imageUrl),
           _buildTitleAndPriceRow(context),
-          _buildLocation(context),
+          AddressTag(product.location),
           _buildButtonBar(context),
           _buildDescription(context),
         ],
@@ -28,7 +31,7 @@ class ProductItem extends StatelessWidget {
   }
 
   Container _buildDescription(BuildContext context) {
-    if (displayOnly) {
+    if (cardType == CardType.list) {
       return Container();
     }
     return Container(
@@ -38,34 +41,15 @@ class ProductItem extends StatelessWidget {
   }
 
   ButtonBar _buildButtonBar(BuildContext context) {
-    Widget _detailsOrDelete = displayOnly
-        ? _buildDetailsButton(context)
+    Widget _infoOrDeleteButton = cardType == CardType.list
+        ? _buildInfoButton(context)
         : _buildDeleteButton(context);
     return ButtonBar(
       alignment: MainAxisAlignment.center,
       children: <Widget>[
-        _detailsOrDelete,
+        _infoOrDeleteButton,
         _buildFavoriteButton(context),
       ],
-    );
-  }
-
-  DecoratedBox _buildLocation(BuildContext context) {
-    return DecoratedBox(
-      child: Padding(
-        padding: EdgeInsets.symmetric(
-          vertical: 5.0,
-          horizontal: 25.0,
-        ),
-        child: Text('Union Square, San Francisco'),
-      ),
-      decoration: BoxDecoration(
-        border: Border.all(
-          width: 1.0,
-          color: Theme.of(context).primaryColorLight,
-        ),
-        borderRadius: BorderRadius.all(Radius.circular(5.0)),
-      ),
     );
   }
 
@@ -76,33 +60,11 @@ class ProductItem extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
-          Text(
-            product.title,
-            style: TextStyle(
-              fontSize: 20.0,
-              fontWeight: FontWeight.bold,
-              fontFamily: 'Oswald',
-            ),
-          ),
+          TitleDefault(product.title),
           SizedBox(width: 15.0),
-          _buildPrice(context),
+          PriceTag(product.price),
+          // _buildPrice(context),
         ],
-      ),
-    );
-  }
-
-  DecoratedBox _buildPrice(BuildContext context) {
-    return DecoratedBox(
-      child: Padding(
-        padding: EdgeInsets.all(5.0),
-        child: Text('€${product.price.toString()}'),
-      ),
-      decoration: BoxDecoration(
-        border: Border.all(
-          width: 1.0,
-        ),
-        borderRadius: BorderRadius.all(Radius.circular(5.0)),
-        color: Theme.of(context).primaryColorLight,
       ),
     );
   }
@@ -116,7 +78,7 @@ class ProductItem extends StatelessWidget {
     );
   }
 
-  IconButton _buildDetailsButton(BuildContext context) {
+  IconButton _buildInfoButton(BuildContext context) {
     return IconButton(
       icon: Icon(Icons.info),
       iconSize: 30.0,

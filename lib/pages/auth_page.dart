@@ -11,6 +11,17 @@ class _AuthPageState extends State<AuthPage> {
   String _password = '';
   bool _acceptTerms = false;
 
+  _buildBackgroundImage() {
+    return BoxDecoration(
+      image: DecorationImage(
+        fit: BoxFit.cover,
+        colorFilter:
+            ColorFilter.mode(Colors.black.withOpacity(0.4), BlendMode.dstATop),
+        image: AssetImage('assets/background.jpg'),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return new Scaffold(
@@ -19,26 +30,19 @@ class _AuthPageState extends State<AuthPage> {
       ),
       body: Center(
         child: Container(
-          decoration: BoxDecoration(
-            image: DecorationImage(
-              fit: BoxFit.cover,
-              colorFilter: ColorFilter.mode(
-                  Colors.black.withOpacity(0.4), BlendMode.dstATop),
-              image: AssetImage('assets/background.jpg'),
-            ),
-          ),
+          decoration: _buildBackgroundImage(),
           padding: EdgeInsets.all(15.0),
           child: Center(
             child: SingleChildScrollView(
               child: Column(
                 children: <Widget>[
-                  buildEmailField(),
+                  _buildEmailField(),
                   SizedBox(height: 10.0),
-                  buildPasswordField(),
+                  _buildPasswordField(),
                   SizedBox(height: 10.0),
-                  buildAcceptTerms(),
+                  _buildAcceptTerms(),
                   SizedBox(height: 10.0),
-                  buildLoginButton(context),
+                  _buildLoginButton(context),
                   SizedBox(height: 10.0),
                   // Text('$EMAIL: $_email'),
                   // Text('$PASSWORD: $_password'),
@@ -51,7 +55,7 @@ class _AuthPageState extends State<AuthPage> {
     );
   }
 
-  buildAcceptTerms() {
+  DecoratedBox _buildAcceptTerms() {
     return DecoratedBox(
       decoration: BoxDecoration(
         color: Colors.white,
@@ -71,7 +75,7 @@ class _AuthPageState extends State<AuthPage> {
     );
   }
 
-  TextField buildEmailField() {
+  TextField _buildEmailField() {
     return TextField(
       decoration: InputDecoration(
         labelText: '$EMAIL:',
@@ -87,7 +91,7 @@ class _AuthPageState extends State<AuthPage> {
     );
   }
 
-  TextField buildPasswordField() {
+  TextField _buildPasswordField() {
     return TextField(
       decoration: InputDecoration(
         labelText: '$PASSWORD:',
@@ -103,13 +107,15 @@ class _AuthPageState extends State<AuthPage> {
     );
   }
 
-  RaisedButton buildLoginButton(BuildContext context) {
+  RaisedButton _buildLoginButton(BuildContext context) {
     return RaisedButton(
       color: Theme.of(context).primaryColor,
       child: Text('Login'),
-      onPressed: () {
-        Navigator.pushReplacementNamed(context, PRODUCTSROUTE);
-      },
+      onPressed: _submitForm,
     );
+  }
+
+  void _submitForm() {
+    Navigator.pushReplacementNamed(context, PRODUCTSROUTE);
   }
 }

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import '../utils/constants.dart';
-import '../models/product.dart';
+import '../../utils/constants.dart';
+import '../../models/product.dart';
 
 class ProductCreateTab extends StatefulWidget {
   final Function _addProduct;
@@ -20,29 +20,32 @@ class _ProductCreateTabState extends State<ProductCreateTab> {
       margin: EdgeInsets.all(10.0),
       child: ListView(
         children: <Widget>[
-          buildTitleField(),
-          buildDescriptionField(),
-          buildPriceField(),
+          _buildTitleField(),
+          _buildDescriptionField(),
+          _buildPriceField(),
           SizedBox(height: 10.0),
-          buildSubmitButton(),
+          _buildSubmitButton(),
         ],
       ),
     );
   }
 
-  buildSubmitButton() {
+  _buildSubmitButton() {
     return RaisedButton(
       child: Text('Save'),
       color: Theme.of(context).accentColor,
-      onPressed: () {
-        _product.imageUrl = 'assets/food.jpg';
-        widget._addProduct(_product);
-        Navigator.pushReplacementNamed(context, PRODUCTSROUTE);
-      },
+      onPressed: _submitForm,
     );
   }
 
-  buildTitleField() {
+  void _submitForm() {
+    _product.imageUrl = 'assets/food.jpg';
+    _product.location = 'Union Square, San Francisco';
+    widget._addProduct(_product);
+    Navigator.pushReplacementNamed(context, PRODUCTSROUTE);
+  }
+
+  _buildTitleField() {
     return TextField(
       decoration: InputDecoration(labelText: 'Title:'),
       onChanged: (String value) {
@@ -53,7 +56,7 @@ class _ProductCreateTabState extends State<ProductCreateTab> {
     );
   }
 
-  buildDescriptionField() {
+  _buildDescriptionField() {
     return TextField(
       decoration: InputDecoration(labelText: 'Description:'),
       maxLines: 4,
@@ -66,7 +69,7 @@ class _ProductCreateTabState extends State<ProductCreateTab> {
     );
   }
 
-  buildPriceField() {
+  _buildPriceField() {
     return TextField(
       decoration: InputDecoration(labelText: 'Price:'),
       keyboardType: TextInputType.number,

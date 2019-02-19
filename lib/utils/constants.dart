@@ -8,3 +8,13 @@ const String PRODUCTSROUTE = '/$PRODUCTS';
 
 const String EMAIL = 'Email';
 const String PASSWORD = 'Password';
+
+enum DrawerType {
+  fromListToAdmin,
+  fromAdminToList,
+}
+
+enum CardType {
+  list,
+  info,
+}
