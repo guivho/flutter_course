@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import '../utils/constants.dart';
+import '../utils/validators.dart';
+import '../models/login_data.dart';
 
 class AuthPage extends StatefulWidget {
   @override
@@ -7,9 +9,9 @@ class AuthPage extends StatefulWidget {
 }
 
 class _AuthPageState extends State<AuthPage> {
-  String _email = '';
-  String _password = '';
-  bool _acceptTerms = false;
+  final LoginData _loginData = LoginData();
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  final String _warningText = 'Required!';
 
   _buildBackgroundImage() {
     return BoxDecoration(
@@ -38,21 +40,7 @@ class _AuthPageState extends State<AuthPage> {
             child: SingleChildScrollView(
               child: Container(
                 width: targetWidth,
-                child: Column(
-                  children: <Widget>[
-                    _buildEmailField(),
-                    SizedBox(height: 10.0),
-                    _buildPasswordField(),
-                    SizedBox(height: 10.0),
-                    _buildAcceptTerms(),
-                    SizedBox(height: 10.0),
-                    _buildLoginButton(),
-                    SizedBox(height: 10.0),
-                    // _buildHomeCookedButton(),
-                    // Text('$EMAIL: $_email'),
-                    // Text('$PASSWORD: $_password'),
-                  ],
-                ),
+                child: _buildForm(),
               ),
             ),
           ),
@@ -61,54 +49,90 @@ class _AuthPageState extends State<AuthPage> {
     );
   }
 
-  DecoratedBox _buildAcceptTerms() {
-    return DecoratedBox(
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.all(
-          Radius.circular(5.0),
-        ),
-      ),
-      child: SwitchListTile(
-        value: _acceptTerms,
-        onChanged: (bool onValue) {
-          setState(() {
-            _acceptTerms = onValue;
-          });
-        },
-        title: Text('Accept terms?'),
+  _buildForm() {
+    return Form(
+      key: _formKey,
+      child: Column(
+        children: <Widget>[
+          _buildEmailField(),
+          SizedBox(height: 10.0),
+          _buildPasswordField(),
+          SizedBox(height: 10.0),
+          _buildAcceptTerms(),
+          SizedBox(height: 10.0),
+          _buildLoginButton(),
+          SizedBox(height: 10.0),
+          // _buildHomeCookedButton(),
+          // Text('$EMAIL: $_email'),
+          // Text('$PASSWORD: $_password'),
+        ],
       ),
     );
   }
 
-  TextField _buildEmailField() {
-    return TextField(
+  Widget _buildAcceptTerms() {
+    return Container(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          DecoratedBox(
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.all(
+                Radius.circular(5.0),
+              ),
+            ),
+            child: SwitchListTile(
+              value: _loginData.acceptTerms,
+              onChanged: (bool onValue) {
+                setState(() {
+                  _loginData.acceptTerms = onValue;
+                });
+              },
+              title: Text('Accept terms?'),
+            ),
+          ),
+          Text(
+            _loginData.warning,
+            style: TextStyle(color: Colors.red),
+          ),
+        ],
+      ),
+    );
+  }
+
+  TextFormField _buildEmailField() {
+    return TextFormField(
       decoration: InputDecoration(
         labelText: '$EMAIL:',
         filled: true,
         fillColor: Colors.white,
       ),
       keyboardType: TextInputType.emailAddress,
-      onChanged: (String value) {
-        setState(() {
-          _email = value;
-        });
+      validator: Validators.emailAddress,
+      onSaved: (String value) {
+        _loginData.email = value;
       },
     );
   }
 
-  TextField _buildPasswordField() {
-    return TextField(
+  TextFormField _buildPasswordField() {
+    return TextFormField(
       decoration: InputDecoration(
         labelText: '$PASSWORD:',
         filled: true,
         fillColor: Colors.white,
       ),
       obscureText: true,
-      onChanged: (String value) {
-        setState(() {
-          _password = value;
-        });
+      validator: Validators.password,
+      //  (String input) {
+      //   String errors = Validators.password(input);
+      //   if (errors.length > 0) {
+      //     return errors;
+      //   }
+      // },
+      onSaved: (String value) {
+        _loginData.password = value;
       },
     );
   }
@@ -132,6 +156,16 @@ class _AuthPageState extends State<AuthPage> {
   // }
 
   void _submitForm() {
-    Navigator.pushReplacementNamed(context, PRODUCTSROUTE);
+    if (_formKey.currentState.validate()) {
+      _formKey.currentState.save();
+      setState(() {
+        _loginData.warning = _loginData.acceptTerms ? '' : _warningText;
+      });
+      // print(_loginData.email);
+      // print(_loginData.password);
+      // print(_loginData.acceptTerms);
+      if (_loginData.acceptTerms)
+        Navigator.pushReplacementNamed(context, PRODUCTSROUTE);
+    }
   }
 }
