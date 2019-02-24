@@ -18,7 +18,7 @@ class _AppState extends State<App> {
   @override
   //final String _product = 'Food tester';
   Widget build(BuildContext context) {
-    print('[MyApp] build');
+    print('[app] build');
     return MaterialApp(
       // debugShowMaterialGrid: true,
       theme: ThemeData(
@@ -50,6 +50,13 @@ class _AppState extends State<App> {
     print(_products);
   }
 
+  void _updateProduct(Product product) {
+    setState(() {
+      _products[product.id] = product;
+    });
+    print(_products);
+  }
+
   void _deleteProduct(int index) {
     setState(() {
       _products.removeAt(index);
@@ -72,10 +79,13 @@ class _AppState extends State<App> {
   }
 
   Map<String, WidgetBuilder> defineRoutes(BuildContext context,
-      List<Product> products, Function addProduct, Function deleteProduct) {
+      List<Product> _products, Function _addProduct, Function _deleteProduct) {
+    // NOTE: by pushing e.g. the ADMINROUTE by name from anywere, the
+    // PrdouctsPage will be instantauted as defined here under, i.e.
+    // with the _products list that is initialised above
     return {
-      ADMINROUTE: (BuildContext context) =>
-          ProductsAdminPage(addProduct, deleteProduct),
+      ADMINROUTE: (BuildContext context) => ProductsAdminPage(
+          _addProduct, _updateProduct, _deleteProduct, _products),
       PRODUCTSROUTE: (BuildContext context) => ProductsPage(_products),
       AUTHROUTE: (BuildContext context) => AuthPage(),
     };

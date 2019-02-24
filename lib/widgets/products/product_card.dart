@@ -9,10 +9,13 @@ class ProductCard extends StatelessWidget {
   final CardType cardType;
   final Product product;
 
-  ProductCard(this.product, this.cardType);
+  ProductCard(this.product, this.cardType) {
+    print('[product_card] Constructor ${product.id}');
+  }
 
   @override
   Widget build(BuildContext context) {
+    print('[product_card] Build ${product.id}');
     return _buildProductItem(context);
   }
 

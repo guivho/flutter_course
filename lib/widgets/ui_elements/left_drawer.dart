@@ -31,6 +31,8 @@ class LeftDrawer extends StatelessWidget {
       leading: Icon(Icons.edit),
       title: Text('Products Admin'),
       onTap: () {
+        // this instantiates the ProductsAdmin withe the
+        // four parameters that are defined and initialised in app.dart
         Navigator.pushReplacementNamed(context, ADMINROUTE);
       },
     );

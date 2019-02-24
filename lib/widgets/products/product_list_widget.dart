@@ -3,12 +3,12 @@ import './product_card.dart';
 import './../../models/product.dart';
 import '../../utils/constants.dart';
 
-class ProductList extends StatelessWidget {
+class ProductListWidget extends StatelessWidget {
   final List<Product> products;
   // final Function(int) deleteProduct;
 
-  ProductList(this.products) {
-    print('[Producs Widget] Constructor');
+  ProductListWidget(this.products) {
+    print('[product_list_widget] Constructor');
   }
 
   Widget _buildProductItem(BuildContext context, int index) {
@@ -27,7 +27,7 @@ class ProductList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    print('[Products Widget] Build');
+    print('[product_list_widget] Build');
     return _buildProductList();
   }
 }

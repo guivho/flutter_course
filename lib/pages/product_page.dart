@@ -4,9 +4,9 @@ import '../widgets/products/product_card.dart';
 import '../utils/constants.dart';
 
 class ProductPage extends StatelessWidget {
-  final Product _product;
+  final Product product;
 
-  ProductPage(this._product);
+  ProductPage(this.product);
 
   @override
   Widget build(BuildContext context) {
@@ -14,12 +14,13 @@ class ProductPage extends StatelessWidget {
       onWillPop: () {
         print("Back button pressed");
         Navigator.pop(context, false);
+        return Future.value(false);
       },
       child: Scaffold(
         appBar: AppBar(
-          title: Text(_product.title),
+          title: Text(product.title),
         ),
-        body: ProductCard(_product, CardType.info),
+        body: ProductCard(product, CardType.info),
       ),
     );
   }

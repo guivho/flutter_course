@@ -7,11 +7,11 @@ class Product {
   String imageUrl;
 
   Product() {
-    id = 0;
-    title = '';
-    description = '';
-    price = 0.0;
-    location = '';
-    imageUrl = '';
+    id = null;
+    title = null;
+    description = null;
+    price = null;
+    location = 'Union Square, San Francisco';
+    imageUrl = 'assets/food.jpg';
   }
 }

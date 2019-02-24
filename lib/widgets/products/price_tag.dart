@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
 
 class PriceTag extends StatelessWidget {
-  final double _price;
+  final double price;
 
-  PriceTag(this._price);
+  PriceTag(this.price);
 
   @override
   DecoratedBox build(BuildContext context) {
     return DecoratedBox(
       child: Padding(
         padding: EdgeInsets.all(5.0),
-        child: Text('€${_price.toString()}'),
+        child: Text('€${price.toString()}'),
       ),
       decoration: BoxDecoration(
         border: Border.all(

@@ -164,8 +164,10 @@ class _AuthPageState extends State<AuthPage> {
       // print(_loginData.email);
       // print(_loginData.password);
       // print(_loginData.acceptTerms);
-      if (_loginData.acceptTerms)
+      if (_loginData.acceptTerms) {
+        print('[auth_page] pushing PRODUCTSROUTE');
         Navigator.pushReplacementNamed(context, PRODUCTSROUTE);
+      }
     }
   }
 }

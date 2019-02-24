@@ -2,17 +2,19 @@ import 'package:flutter/material.dart';
 import '../../utils/constants.dart';
 import '../../models/product.dart';
 
-class ProductCreateTab extends StatefulWidget {
-  final Function _addProduct;
+class ProductEditTab extends StatefulWidget {
+  final Function addProduct;
+  final Function updateProduct;
+  final Product product;
 
-  ProductCreateTab(this._addProduct);
+  ProductEditTab({this.product, this.addProduct, this.updateProduct});
 
   @override
-  _ProductCreateTabState createState() => new _ProductCreateTabState();
+  _ProductEditTabState createState() => new _ProductEditTabState();
 }
 
-class _ProductCreateTabState extends State<ProductCreateTab> {
-  Product _product = Product();
+class _ProductEditTabState extends State<ProductEditTab> {
+  final Product _formData = Product();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   @override
@@ -20,8 +22,7 @@ class _ProductCreateTabState extends State<ProductCreateTab> {
     final double mediaWidth = MediaQuery.of(context).size.width;
     final targetWidth = mediaWidth > 368.0 ? 368.0 : mediaWidth * 0.95;
     final targetPadding = (mediaWidth - targetWidth) / 2;
-
-    return GestureDetector(
+    final Widget _bodyContent = GestureDetector(
       onTap: () {
         FocusScope.of(context).requestFocus(FocusNode());
       },
@@ -44,6 +45,15 @@ class _ProductCreateTabState extends State<ProductCreateTab> {
         ),
       ),
     );
+    return widget.product == null
+        ? _bodyContent //adding
+        // editing
+        : Scaffold(
+            appBar: AppBar(
+              title: Text('Edit product'),
+            ),
+            body: _bodyContent,
+          );
   }
 
   _buildSubmitButton() {
@@ -57,9 +67,14 @@ class _ProductCreateTabState extends State<ProductCreateTab> {
     // alternative to autovalidate
     if (_formKey.currentState.validate()) {
       _formKey.currentState.save();
-      _product.imageUrl = 'assets/food.jpg';
-      _product.location = 'Union Square, San Francisco';
-      widget._addProduct(_product);
+      if (widget.product != null) {
+        _formData.id = widget.product.id;
+      }
+      if (widget.product == null) {
+        widget.addProduct(_formData);
+      } else {
+        widget.updateProduct(_formData);
+      }
       Navigator.pushReplacementNamed(context, PRODUCTSROUTE);
     }
   }
@@ -67,12 +82,13 @@ class _ProductCreateTabState extends State<ProductCreateTab> {
   _buildTitleField() {
     return TextFormField(
       decoration: InputDecoration(labelText: 'Title:'),
+      initialValue: widget.product == null ? '' : widget.product.title,
       validator: (String value) {
         if (value.isEmpty) return 'Please supply a title';
         if (value.length < 5) return 'Title must be 5 characters or more';
       },
       onSaved: (String value) {
-        _product.title = value;
+        _formData.title = value;
       },
     );
   }
@@ -82,6 +98,7 @@ class _ProductCreateTabState extends State<ProductCreateTab> {
       decoration: InputDecoration(labelText: 'Description:'),
       maxLines: 4,
       maxLength: 256,
+      initialValue: widget.product == null ? '' : widget.product.description,
       validator: (String value) {
         if (value.isEmpty) {
           if (value.isEmpty) return 'Please supply a title';
@@ -89,7 +106,7 @@ class _ProductCreateTabState extends State<ProductCreateTab> {
         }
       },
       onSaved: (String value) {
-        _product.description = value;
+        _formData.description = value;
       },
     );
   }
@@ -98,6 +115,8 @@ class _ProductCreateTabState extends State<ProductCreateTab> {
     return TextFormField(
       decoration: InputDecoration(labelText: 'Price:'),
       keyboardType: TextInputType.number,
+      initialValue:
+          widget.product == null ? '' : widget.product.price.toString(),
       validator: (String value) {
         if (value.isEmpty) return 'Please provide a price';
         try {
@@ -107,7 +126,7 @@ class _ProductCreateTabState extends State<ProductCreateTab> {
         }
       },
       onSaved: (String value) {
-        _product.price = double.parse(value);
+        _formData.price = double.parse(value);
       },
     );
   }

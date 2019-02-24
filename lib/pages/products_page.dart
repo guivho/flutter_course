@@ -1,16 +1,19 @@
 import 'package:flutter/material.dart';
 import '../utils/constants.dart';
 import '../models/product.dart';
-import './../widgets/products/product_list.dart';
+import './../widgets/products/product_list_widget.dart';
 import '../widgets/ui_elements/left_drawer.dart';
 
 class ProductsPage extends StatelessWidget {
-  final List<Product> _products;
+  final List<Product> products;
 
-  ProductsPage(this._products);
+  ProductsPage(this.products) {
+    print('products_page] Constructor');
+  }
 
   @override
   Widget build(BuildContext context) {
+    print('products_page] Build');
     return Scaffold(
       drawer: LeftDrawer(DrawerType.fromListToAdmin),
       appBar: AppBar(
@@ -22,7 +25,7 @@ class ProductsPage extends StatelessWidget {
           ),
         ],
       ),
-      body: ProductList(_products),
+      body: ProductListWidget(products),
     );
   }
 }
