@@ -19,10 +19,22 @@ class _ProductEditTabState extends State<ProductEditTab> {
 
   @override
   Widget build(BuildContext context) {
+    return widget.product == null
+        ? _buildMainBody() //adding
+        // editing
+        : Scaffold(
+            appBar: AppBar(
+              title: Text('Edit product'),
+            ),
+            body: _buildMainBody(),
+          );
+  }
+
+  GestureDetector _buildMainBody() {
     final double mediaWidth = MediaQuery.of(context).size.width;
     final targetWidth = mediaWidth > 368.0 ? 368.0 : mediaWidth * 0.95;
     final targetPadding = (mediaWidth - targetWidth) / 2;
-    final Widget _bodyContent = GestureDetector(
+    return GestureDetector(
       onTap: () {
         FocusScope.of(context).requestFocus(FocusNode());
       },
@@ -45,18 +57,9 @@ class _ProductEditTabState extends State<ProductEditTab> {
         ),
       ),
     );
-    return widget.product == null
-        ? _bodyContent //adding
-        // editing
-        : Scaffold(
-            appBar: AppBar(
-              title: Text('Edit product'),
-            ),
-            body: _bodyContent,
-          );
   }
 
-  _buildSubmitButton() {
+  RaisedButton _buildSubmitButton() {
     return RaisedButton(
       child: Text('Save'),
       onPressed: _submitForm,

@@ -57,9 +57,9 @@ class _AppState extends State<App> {
     print(_products);
   }
 
-  void _deleteProduct(int index) {
+  void _deleteProduct(Product product) {
     setState(() {
-      _products.removeAt(index);
+      _products.removeAt(product.id);
     });
   }
 
