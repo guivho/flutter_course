@@ -11,12 +11,12 @@ class ProductCard extends StatelessWidget {
   final int index;
 
   ProductCard({this.product, this.index, this.cardType}) {
-    print('[product_card] Constructor ${product.id}');
+    print('[product_card] Constructor ${product.title}');
   }
 
   @override
   Widget build(BuildContext context) {
-    print('[product_card] Build ${product.id}');
+    print('[product_card] Build ${product.title}');
     return _buildProductItem(context);
   }
 
@@ -28,22 +28,22 @@ class ProductCard extends StatelessWidget {
           _buildTitleAndPriceRow(context),
           AddressTag(product.location),
           _buildButtonBar(context),
-          // _buildUuid(),
+          _buildUuid(),
           _buildDescription(),
         ],
       ),
     );
   }
 
-  // Container _buildUuid() {
-  //   if (cardType == CardType.list) {
-  //     return Container();
-  //   }
-  //   return Container(
-  //     margin: EdgeInsets.symmetric(horizontal: 10.0),
-  //     child: Text(product.id),
-  //   );
-  // }
+  Container _buildUuid() {
+    if (cardType == CardType.list) {
+      return Container();
+    }
+    return Container(
+      margin: EdgeInsets.symmetric(horizontal: 10.0),
+      child: Text(product.id),
+    );
+  }
 
   Container _buildDescription() {
     if (cardType == CardType.list) {

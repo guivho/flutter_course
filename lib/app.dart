@@ -5,8 +5,8 @@ import './pages/products_admin_page.dart';
 import './pages/products_page.dart';
 import './pages/product_page.dart';
 import './pages/auth_page.dart';
-import './models/product.dart';
-import 'package:uuid/uuid.dart';
+import 'package:scoped_model/scoped_model.dart';
+import './scoped-models/products_model.dart';
 
 class App extends StatefulWidget {
   @override
@@ -14,13 +14,19 @@ class App extends StatefulWidget {
 }
 
 class _AppState extends State<App> {
-  final List<Product> _products = [];
-  final uuid = Uuid();
-
   @override
   //final String _product = 'Food tester';
   Widget build(BuildContext context) {
     print('[app] build');
+    return ScopedModel<ProductsModel>(
+      // here we create the model that will be used
+      // in the complete tree built by _buildMaterialApp
+      model: ProductsModel(),
+      child: _buildMaterialApp(),
+    );
+  }
+
+  MaterialApp _buildMaterialApp() {
     return MaterialApp(
       // debugShowMaterialGrid: true,
       theme: ThemeData(
@@ -32,36 +38,16 @@ class _AppState extends State<App> {
         // fontFamily: 'Oswald',
       ),
       // home: AuthPage(),
-      routes: defineRoutes(context, _products, _addProduct, _deleteProduct),
+      routes: defineRoutes(context),
       onGenerateRoute: (RouteSettings settings) {
         return defineOnGenerateRoute(context, settings);
       },
       onUnknownRoute: (RouteSettings settings) {
         print('CAVE: unknown route ${settings.name}');
         return MaterialPageRoute(
-            builder: (BuildContext context) => ProductsPage(_products));
+            builder: (BuildContext context) => ProductsPage());
       },
     );
-  }
-
-  void _addProduct(Product product) {
-    product.id = uuid.v1();
-    setState(() {
-      _products.add(product);
-    });
-  }
-
-  void _updateProduct(int index, Product product) {
-    setState(() {
-      _products[index] = product;
-    });
-    print(_products);
-  }
-
-  void _deleteProduct(int index) {
-    setState(() {
-      _products.removeAt(index);
-    });
   }
 
   Route<dynamic> defineOnGenerateRoute(
@@ -71,23 +57,16 @@ class _AppState extends State<App> {
     if (pathElements[0] == '' && pathElements[1] == PRODUCT) {
       final int index = int.parse(pathElements[2]);
       return MaterialPageRoute<bool>(
-        builder: (BuildContext context) => ProductPage(
-              _products[index],
-            ),
+        builder: (BuildContext context) => ProductPage(index),
       );
     }
     return null;
   }
 
-  Map<String, WidgetBuilder> defineRoutes(BuildContext context,
-      List<Product> _products, Function _addProduct, Function _deleteProduct) {
-    // NOTE: by pushing e.g. the ADMINROUTE by name from anywere, the
-    // PrdouctsPage will be instantauted as defined here under, i.e.
-    // with the _products list that is initialised above
+  Map<String, WidgetBuilder> defineRoutes(BuildContext context) {
     return {
-      ADMINROUTE: (BuildContext context) => ProductsAdminPage(
-          _addProduct, _updateProduct, _deleteProduct, _products),
-      PRODUCTSROUTE: (BuildContext context) => ProductsPage(_products),
+      ADMINROUTE: (BuildContext context) => ProductsAdminPage(),
+      PRODUCTSROUTE: (BuildContext context) => ProductsPage(),
       AUTHROUTE: (BuildContext context) => AuthPage(),
     };
   }

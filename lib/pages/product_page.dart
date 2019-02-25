@@ -2,11 +2,13 @@ import 'package:flutter/material.dart';
 import '../models/product.dart';
 import '../widgets/products/product_card.dart';
 import '../utils/constants.dart';
+import 'package:scoped_model/scoped_model.dart';
+import '../scoped-models/products_model.dart';
 
 class ProductPage extends StatelessWidget {
-  final Product product;
+  final int productIndex;
 
-  ProductPage(this.product);
+  ProductPage(this.productIndex);
 
   @override
   Widget build(BuildContext context) {
@@ -16,11 +18,16 @@ class ProductPage extends StatelessWidget {
         Navigator.pop(context, false);
         return Future.value(false);
       },
-      child: Scaffold(
-        appBar: AppBar(
-          title: Text(product.title),
-        ),
-        body: ProductCard(product: product, cardType: CardType.info),
+      child: ScopedModelDescendant<ProductsModel>(
+        builder: (BuildContext context, Widget child, ProductsModel model) {
+          final Product product = model.products[productIndex];
+          return Scaffold(
+            appBar: AppBar(
+              title: Text(product.title),
+            ),
+            body: ProductCard(product: product, cardType: CardType.info),
+          );
+        },
       ),
     );
   }

@@ -1,16 +1,10 @@
 import 'package:flutter/material.dart';
 import '../../utils/constants.dart';
 import '../../models/product.dart';
+import 'package:scoped_model/scoped_model.dart';
+import '../../scoped-models/products_model.dart';
 
 class ProductEditTab extends StatefulWidget {
-  final Function addProduct;
-  final Function updateProduct;
-  final Product product;
-  final int productIndex;
-
-  ProductEditTab(
-      {this.product, this.addProduct, this.updateProduct, this.productIndex});
-
   @override
   _ProductEditTabState createState() => new _ProductEditTabState();
 }
@@ -21,21 +15,26 @@ class _ProductEditTabState extends State<ProductEditTab> {
 
   @override
   Widget build(BuildContext context) {
-    return widget.product == null
-        ? _buildMainBody() //adding
-        // editing
-        : Scaffold(
-            appBar: AppBar(
-              title: Text('Edit product'),
-            ),
-            body: _buildMainBody(),
-          );
+    return ScopedModelDescendant<ProductsModel>(
+      builder: (BuildContext context, Widget child, ProductsModel model) {
+        return model.selectedProductIndex == null
+            ? _buildMainBody(model) //adding
+            // editing
+            : Scaffold(
+                appBar: AppBar(
+                  title: Text('Edit product'),
+                ),
+                body: _buildMainBody(model),
+              );
+      },
+    );
   }
 
-  GestureDetector _buildMainBody() {
+  GestureDetector _buildMainBody(ProductsModel model) {
     final double mediaWidth = MediaQuery.of(context).size.width;
     final targetWidth = mediaWidth > 368.0 ? 368.0 : mediaWidth * 0.95;
     final targetPadding = (mediaWidth - targetWidth) / 2;
+    final Product product = model.selectedProduct;
     return GestureDetector(
       onTap: () {
         FocusScope.of(context).requestFocus(FocusNode());
@@ -49,11 +48,11 @@ class _ProductEditTabState extends State<ProductEditTab> {
           child: ListView(
             padding: EdgeInsets.symmetric(horizontal: targetPadding),
             children: <Widget>[
-              _buildTitleField(),
-              _buildDescriptionField(),
-              _buildPriceField(),
+              _buildTitleField(product),
+              _buildDescriptionField(product),
+              _buildPriceField(product),
               SizedBox(height: 10.0),
-              _buildSubmitButton(),
+              _buildSubmitButton(model, product),
             ],
           ),
         ),
@@ -61,33 +60,33 @@ class _ProductEditTabState extends State<ProductEditTab> {
     );
   }
 
-  RaisedButton _buildSubmitButton() {
+  Widget _buildSubmitButton(ProductsModel model, Product product) {
     return RaisedButton(
       child: Text('Save'),
-      onPressed: _submitForm,
+      onPressed: () => _submitForm(model, product),
     );
   }
 
-  void _submitForm() {
+  void _submitForm(ProductsModel model, Product product) {
     // alternative to autovalidate
     if (_formKey.currentState.validate()) {
       _formKey.currentState.save();
-      if (widget.product != null) {
-        _formData.id = widget.product.id;
+      if (product != null) {
+        _formData.id = product.id;
       }
-      if (widget.product == null) {
-        widget.addProduct(_formData);
+      if (product == null) {
+        model.addProduct(_formData);
       } else {
-        widget.updateProduct(widget.productIndex, _formData);
+        model.updateProduct(_formData);
       }
       Navigator.pushReplacementNamed(context, PRODUCTSROUTE);
     }
   }
 
-  _buildTitleField() {
+  _buildTitleField(Product product) {
     return TextFormField(
       decoration: InputDecoration(labelText: 'Title:'),
-      initialValue: widget.product == null ? '' : widget.product.title,
+      initialValue: product == null ? '' : product.title,
       validator: (String value) {
         if (value.isEmpty) return 'Please supply a title';
         if (value.length < 5) return 'Title must be 5 characters or more';
@@ -98,12 +97,12 @@ class _ProductEditTabState extends State<ProductEditTab> {
     );
   }
 
-  _buildDescriptionField() {
+  _buildDescriptionField(Product product) {
     return TextFormField(
       decoration: InputDecoration(labelText: 'Description:'),
       maxLines: 4,
       maxLength: 256,
-      initialValue: widget.product == null ? '' : widget.product.description,
+      initialValue: product == null ? '' : product.description,
       validator: (String value) {
         if (value.isEmpty) {
           if (value.isEmpty) return 'Please supply a title';
@@ -116,12 +115,11 @@ class _ProductEditTabState extends State<ProductEditTab> {
     );
   }
 
-  _buildPriceField() {
+  _buildPriceField(Product product) {
     return TextFormField(
       decoration: InputDecoration(labelText: 'Price:'),
       keyboardType: TextInputType.number,
-      initialValue:
-          widget.product == null ? '' : widget.product.price.toString(),
+      initialValue: product == null ? '' : product.price.toString(),
       validator: (String value) {
         if (value.isEmpty) return 'Please provide a price';
         try {
