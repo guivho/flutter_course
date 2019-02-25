@@ -12,10 +12,13 @@ class ProductListWidget extends StatelessWidget {
   }
 
   Widget _buildProductItem(BuildContext context, int index) {
-    return ProductCard(products[index], CardType.list);
+    return ProductCard(
+        product: products[index], index: index, cardType: CardType.list);
   }
 
-  Widget _buildProductList() {
+  @override
+  Widget build(BuildContext context) {
+    print('[product_list_widget] Build');
     if (products.length == 0) {
       return Container();
     }
@@ -23,11 +26,5 @@ class ProductListWidget extends StatelessWidget {
       itemBuilder: _buildProductItem,
       itemCount: products.length,
     );
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    print('[product_list_widget] Build');
-    return _buildProductList();
   }
 }

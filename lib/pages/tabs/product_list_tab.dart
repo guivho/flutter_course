@@ -19,7 +19,7 @@ class ProductListTab extends StatelessWidget {
           background: Container(color: Colors.red),
           onDismissed: (DismissDirection direction) {
             if (direction == DismissDirection.endToStart) {
-              deleteProduct(products[index]);
+              deleteProduct(index);
             }
           },
           child: Column(
@@ -30,7 +30,7 @@ class ProductListTab extends StatelessWidget {
                 ),
                 title: Text(products[index].title),
                 subtitle: Text('€${products[index].price.toString()}'),
-                trailing: _buildEditButton(context, products[index]),
+                trailing: _buildEditButton(context, index, products[index]),
               ),
               Divider(),
             ],
@@ -40,7 +40,8 @@ class ProductListTab extends StatelessWidget {
     );
   }
 
-  IconButton _buildEditButton(BuildContext context, Product product) {
+  IconButton _buildEditButton(
+      BuildContext context, int index, Product product) {
     return IconButton(
       icon: Icon(Icons.edit),
       onPressed: () {
@@ -50,6 +51,7 @@ class ProductListTab extends StatelessWidget {
               return ProductEditTab(
                 product: product,
                 updateProduct: updateProduct,
+                productIndex: index,
               );
             },
           ),

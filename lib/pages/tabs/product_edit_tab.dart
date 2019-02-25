@@ -6,8 +6,10 @@ class ProductEditTab extends StatefulWidget {
   final Function addProduct;
   final Function updateProduct;
   final Product product;
+  final int productIndex;
 
-  ProductEditTab({this.product, this.addProduct, this.updateProduct});
+  ProductEditTab(
+      {this.product, this.addProduct, this.updateProduct, this.productIndex});
 
   @override
   _ProductEditTabState createState() => new _ProductEditTabState();
@@ -76,7 +78,7 @@ class _ProductEditTabState extends State<ProductEditTab> {
       if (widget.product == null) {
         widget.addProduct(_formData);
       } else {
-        widget.updateProduct(_formData);
+        widget.updateProduct(widget.productIndex, _formData);
       }
       Navigator.pushReplacementNamed(context, PRODUCTSROUTE);
     }

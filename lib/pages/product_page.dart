@@ -20,7 +20,7 @@ class ProductPage extends StatelessWidget {
         appBar: AppBar(
           title: Text(product.title),
         ),
-        body: ProductCard(product, CardType.info),
+        body: ProductCard(product: product, cardType: CardType.info),
       ),
     );
   }

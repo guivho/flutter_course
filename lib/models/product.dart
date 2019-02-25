@@ -1,5 +1,7 @@
+// import 'package:flutter/material.dart';
+
 class Product {
-  int id;
+  String id;
   String title;
   String description;
   double price;
@@ -14,4 +16,13 @@ class Product {
     location = 'Union Square, San Francisco';
     imageUrl = 'assets/food.jpg';
   }
+
+  // Product({
+  //   @required this.id,
+  //   @required title,
+  //   @required description,
+  //   @required price,
+  //   @required location,
+  //   @required imageUrl,
+  // });
 }

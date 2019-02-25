@@ -8,8 +8,9 @@ import './address_tag.dart';
 class ProductCard extends StatelessWidget {
   final CardType cardType;
   final Product product;
+  final int index;
 
-  ProductCard(this.product, this.cardType) {
+  ProductCard({this.product, this.index, this.cardType}) {
     print('[product_card] Constructor ${product.id}');
   }
 
@@ -27,13 +28,24 @@ class ProductCard extends StatelessWidget {
           _buildTitleAndPriceRow(context),
           AddressTag(product.location),
           _buildButtonBar(context),
-          _buildDescription(context),
+          // _buildUuid(),
+          _buildDescription(),
         ],
       ),
     );
   }
 
-  Container _buildDescription(BuildContext context) {
+  // Container _buildUuid() {
+  //   if (cardType == CardType.list) {
+  //     return Container();
+  //   }
+  //   return Container(
+  //     margin: EdgeInsets.symmetric(horizontal: 10.0),
+  //     child: Text(product.id),
+  //   );
+  // }
+
+  Container _buildDescription() {
     if (cardType == CardType.list) {
       return Container();
     }
@@ -73,29 +85,33 @@ class ProductCard extends StatelessWidget {
   }
 
   IconButton _buildFavoriteButton(BuildContext context) {
+    if (index == null) return null;
     return IconButton(
       icon: Icon(Icons.favorite_border),
       color: Theme.of(context).primaryColor,
       iconSize: 30.0,
-      onPressed: () => {},
+      onPressed: () => Navigator.pushNamed<bool>(
+            context,
+            '$PRODUCTROUTE/$index',
+          ),
     );
   }
 
   IconButton _buildInfoButton(BuildContext context) {
+    if (index == null) return null;
     return IconButton(
       icon: Icon(Icons.info),
       iconSize: 30.0,
       color: Theme.of(context).primaryColor,
       onPressed: () => Navigator.pushNamed<bool>(
             context,
-            '$PRODUCTROUTE/${product.id}',
-          ).then((bool doDelete) {
-            // if (doDelete) deleteProduct(index);
-          }),
+            '$PRODUCTROUTE/$index',
+          ),
     );
   }
 
   IconButton _buildDeleteButton(BuildContext context) {
+    if (index == null) return null;
     return IconButton(
       icon: Icon(Icons.delete),
       iconSize: 30.0,

@@ -6,6 +6,7 @@ import './pages/products_page.dart';
 import './pages/product_page.dart';
 import './pages/auth_page.dart';
 import './models/product.dart';
+import 'package:uuid/uuid.dart';
 
 class App extends StatefulWidget {
   @override
@@ -14,6 +15,7 @@ class App extends StatefulWidget {
 
 class _AppState extends State<App> {
   final List<Product> _products = [];
+  final uuid = Uuid();
 
   @override
   //final String _product = 'Food tester';
@@ -43,23 +45,22 @@ class _AppState extends State<App> {
   }
 
   void _addProduct(Product product) {
+    product.id = uuid.v1();
     setState(() {
-      product.id = _products.length;
       _products.add(product);
     });
-    print(_products);
   }
 
-  void _updateProduct(Product product) {
+  void _updateProduct(int index, Product product) {
     setState(() {
-      _products[product.id] = product;
+      _products[index] = product;
     });
     print(_products);
   }
 
-  void _deleteProduct(Product product) {
+  void _deleteProduct(int index) {
     setState(() {
-      _products.removeAt(product.id);
+      _products.removeAt(index);
     });
   }
 
