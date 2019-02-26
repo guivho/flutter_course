@@ -4,7 +4,7 @@ import './address_tag.dart';
 import './price_tag.dart';
 import '../ui_elements/title_default.dart';
 import '../../models/product.dart';
-import '../../scoped-models/products_model.dart';
+import '../../scoped-models/main_model.dart';
 import '../../utils/constants.dart';
 
 class ProductCard extends StatelessWidget {
@@ -32,8 +32,30 @@ class ProductCard extends StatelessWidget {
           _buildButtonBar(context),
           _buildUuid(),
           _buildDescription(),
+          _buildUserEmail(),
+          _buildUserId(),
         ],
       ),
+    );
+  }
+
+  Container _buildUserEmail() {
+    if (cardType == CardType.list) {
+      return Container();
+    }
+    return Container(
+      margin: EdgeInsets.symmetric(horizontal: 10.0),
+      child: Text(product.userEmail),
+    );
+  }
+
+  Container _buildUserId() {
+    if (cardType == CardType.list) {
+      return Container();
+    }
+    return Container(
+      margin: EdgeInsets.symmetric(horizontal: 10.0),
+      child: Text(product.userId),
     );
   }
 
@@ -89,7 +111,7 @@ class ProductCard extends StatelessWidget {
   Widget _buildFavoriteButton(BuildContext context) {
     if (index == null) return null;
     return ScopedModelDescendant(
-      builder: (BuildContext context, Widget child, ProductsModel model) {
+      builder: (BuildContext context, Widget child, MainModel model) {
         return IconButton(
           icon: Icon(
               model.isfavorite(index) ? Icons.favorite : Icons.favorite_border),

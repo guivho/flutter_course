@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
-import '../../utils/constants.dart';
-import '../../models/product.dart';
 import 'package:scoped_model/scoped_model.dart';
-import '../../scoped-models/products_model.dart';
+
 import '../../models/form_data.dart';
+import '../../models/product.dart';
+import '../../scoped-models/main_model.dart';
+import '../../utils/constants.dart';
 
 class ProductEditTab extends StatefulWidget {
   @override
@@ -16,8 +17,8 @@ class _ProductEditTabState extends State<ProductEditTab> {
 
   @override
   Widget build(BuildContext context) {
-    return ScopedModelDescendant<ProductsModel>(
-      builder: (BuildContext context, Widget child, ProductsModel model) {
+    return ScopedModelDescendant<MainModel>(
+      builder: (BuildContext context, Widget child, MainModel model) {
         return model.selectedProductIndex == null
             ? _buildMainBody(model) //adding
             // editing
@@ -31,7 +32,7 @@ class _ProductEditTabState extends State<ProductEditTab> {
     );
   }
 
-  GestureDetector _buildMainBody(ProductsModel model) {
+  GestureDetector _buildMainBody(MainModel model) {
     final double mediaWidth = MediaQuery.of(context).size.width;
     final targetWidth = mediaWidth > 368.0 ? 368.0 : mediaWidth * 0.95;
     final targetPadding = (mediaWidth - targetWidth) / 2;
@@ -62,14 +63,14 @@ class _ProductEditTabState extends State<ProductEditTab> {
     );
   }
 
-  Widget _buildSubmitButton(ProductsModel model, Product product) {
+  Widget _buildSubmitButton(MainModel model, Product product) {
     return RaisedButton(
       child: Text('Save'),
       onPressed: () => _submitForm(model, product),
     );
   }
 
-  void _submitForm(ProductsModel model, Product product) {
+  void _submitForm(MainModel model, Product product) {
     // alternative to autovalidate
     if (_formKey.currentState.validate()) {
       _formKey.currentState.save();

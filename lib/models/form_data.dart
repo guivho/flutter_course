@@ -29,6 +29,8 @@ class FormData {
       location: this.location,
       imageUrl: this.imageUrl,
       isFavorite: this.isFavorite,
+      userEmail: '',
+      userId: '',
     );
   }
 }

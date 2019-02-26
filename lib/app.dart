@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
-import './utils/constants.dart';
 // import 'package:flutter/rendering.dart';
+import 'package:scoped_model/scoped_model.dart';
+
 import './pages/products_admin_page.dart';
 import './pages/products_page.dart';
 import './pages/product_page.dart';
 import './pages/auth_page.dart';
-import 'package:scoped_model/scoped_model.dart';
-import './scoped-models/products_model.dart';
+import './scoped-models/main_model.dart';
+import './utils/constants.dart';
 
 class App extends StatefulWidget {
   @override
@@ -18,10 +19,10 @@ class _AppState extends State<App> {
   //final String _product = 'Food tester';
   Widget build(BuildContext context) {
     print('[app] build');
-    return ScopedModel<ProductsModel>(
+    return ScopedModel<MainModel>(
       // here we create the model that will be used
       // in the complete tree built by _buildMaterialApp
-      model: ProductsModel(),
+      model: MainModel(),
       child: _buildMaterialApp(),
     );
   }

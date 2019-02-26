@@ -1,29 +1,27 @@
-import 'package:scoped_model/scoped_model.dart';
+import './connected_products_model.dart';
+
 import '../models/product.dart';
 
-class ProductsModel extends Model {
-  final List<Product> _products = [];
-
-  int _selectedProductIndex;
+mixin ProductsModel on ConnectedProductsModel {
   bool _showFavoritesOnly = false;
 
-  List<Product> get products {
+  List<Product> get allProducts {
     // copy the list and return the copy, not the original
     // to garantee immutability
-    return List.from(_products);
+    return List.from(products);
   }
 
   List<Product> get displayedProducts {
     // copy the list and return the copy, not the original
     // to garantee immutability
     if (_showFavoritesOnly) {
-      return List.from(_products.where((p) => p.isFavorite == true));
+      return List.from(products.where((p) => p.isFavorite == true));
     }
-    return List.from(_products);
+    return allProducts;
   }
 
   int get selectedProductIndex {
-    return _selectedProductIndex;
+    return currentSelectedProductIndex;
   }
 
   bool get showFavoriteOnly {
@@ -31,47 +29,41 @@ class ProductsModel extends Model {
   }
 
   Product get selectedProduct {
-    if (_selectedProductIndex == null) {
+    if (currentSelectedProductIndex == null) {
       return null;
     }
-    return _products[_selectedProductIndex];
+    return products[selectedProductIndex];
   }
 
   bool isfavorite(int index) {
-    if (index >= 0 && index < _products.length) {
-      return _products[index].isFavorite;
+    if (index >= 0 && index < products.length) {
+      return products[index].isFavorite;
     }
     return null;
   }
 
-  void addProduct(Product product) {
-    _products.add(product);
-    _selectedProductIndex = null;
-    notifyListeners();
-  }
-
   void updateProduct(Product product) {
-    _products[_selectedProductIndex] = product;
-    _selectedProductIndex = null;
+    products[selectedProductIndex] = product;
+    currentSelectedProductIndex = null;
     notifyListeners();
   }
 
   void deleteProduct() {
-    _products.removeAt(_selectedProductIndex);
-    _selectedProductIndex = null;
+    products.removeAt(selectedProductIndex);
+    currentSelectedProductIndex = null;
     notifyListeners();
   }
 
   void selectProduct(int index) {
-    if (index >= 0 && index < _products.length) {
-      _selectedProductIndex = index;
+    if (index >= 0 && index < products.length) {
+      currentSelectedProductIndex = index;
     }
   }
 
   void toggleFavorite(int index) {
-    if (index >= 0 && index < _products.length) {
-      _selectedProductIndex = index;
-      updateProduct(_products[_selectedProductIndex].toggleFavorite());
+    if (index >= 0 && index < products.length) {
+      currentSelectedProductIndex = index;
+      updateProduct(products[selectedProductIndex].toggleFavorite());
       notifyListeners();
     }
   }

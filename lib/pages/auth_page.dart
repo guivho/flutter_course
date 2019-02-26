@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:scoped_model/scoped_model.dart';
+
+import '../models/login_data.dart';
+import '../scoped-models/main_model.dart';
 import '../utils/constants.dart';
 import '../utils/validators.dart';
-import '../models/login_data.dart';
 
 class AuthPage extends StatefulWidget {
   @override
@@ -137,10 +140,14 @@ class _AuthPageState extends State<AuthPage> {
     );
   }
 
-  RaisedButton _buildLoginButton() {
-    return RaisedButton(
-      child: Text('Login'),
-      onPressed: _submitForm,
+  Widget _buildLoginButton() {
+    return ScopedModelDescendant<MainModel>(
+      builder: (BuildContext context, Widget child, MainModel model) {
+        return RaisedButton(
+          child: Text('Login'),
+          onPressed: () => _submitForm(model.login),
+        );
+      },
     );
   }
 
@@ -155,7 +162,7 @@ class _AuthPageState extends State<AuthPage> {
   //   );
   // }
 
-  void _submitForm() {
+  void _submitForm(Function login) {
     if (_formKey.currentState.validate()) {
       _formKey.currentState.save();
       setState(() {
@@ -166,6 +173,7 @@ class _AuthPageState extends State<AuthPage> {
       // print(_loginData.acceptTerms);
       if (_loginData.acceptTerms) {
         print('[auth_page] pushing PRODUCTSROUTE');
+        login(_loginData.email, _loginData.password);
         Navigator.pushReplacementNamed(context, PRODUCTSROUTE);
       }
     }

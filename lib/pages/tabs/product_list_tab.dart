@@ -1,18 +1,19 @@
 import 'package:flutter/material.dart';
-import './product_edit_tab.dart';
 import 'package:scoped_model/scoped_model.dart';
-import '../../scoped-models/products_model.dart';
+
+import './product_edit_tab.dart';
+import '../../scoped-models/main_model.dart';
 
 class ProductListTab extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return ScopedModelDescendant<ProductsModel>(
-      builder: (BuildContext context, Widget child, ProductsModel model) {
+    return ScopedModelDescendant<MainModel>(
+      builder: (BuildContext context, Widget child, MainModel model) {
         return ListView.builder(
-          itemCount: model.products.length,
+          itemCount: model.displayedProducts.length,
           itemBuilder: (BuildContext context, int index) {
             return Dismissible(
-              key: Key(model.products[index].id),
+              key: Key(model.displayedProducts[index].id),
               background: Container(color: Colors.red),
               onDismissed: (DismissDirection direction) {
                 if (direction == DismissDirection.endToStart) {
@@ -25,11 +26,11 @@ class ProductListTab extends StatelessWidget {
                   ListTile(
                     leading: CircleAvatar(
                       backgroundImage:
-                          AssetImage(model.products[index].imageUrl),
+                          AssetImage(model.displayedProducts[index].imageUrl),
                     ),
-                    title: Text(model.products[index].title),
-                    subtitle:
-                        Text('€${model.products[index].price.toString()}'),
+                    title: Text(model.displayedProducts[index].title),
+                    subtitle: Text(
+                        '€${model.displayedProducts[index].price.toString()}'),
                     trailing: _buildEditButton(context, index, model),
                   ),
                   Divider(),
@@ -42,8 +43,7 @@ class ProductListTab extends StatelessWidget {
     );
   }
 
-  Widget _buildEditButton(
-      BuildContext context, int index, ProductsModel model) {
+  Widget _buildEditButton(BuildContext context, int index, MainModel model) {
     return IconButton(
       icon: Icon(Icons.edit),
       onPressed: () {
