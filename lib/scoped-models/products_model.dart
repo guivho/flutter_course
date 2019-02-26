@@ -1,14 +1,14 @@
 import 'package:scoped_model/scoped_model.dart';
-import 'package:uuid/uuid.dart';
 import '../models/product.dart';
 
 class ProductsModel extends Model {
   final List<Product> _products = [];
-  final uuid = Uuid();
 
   int _selectedProductIndex;
 
   List<Product> get products {
+    // copy the list and return the copy, not the original
+    // to garantee immutability
     return List.from(_products);
   }
 
@@ -24,7 +24,6 @@ class ProductsModel extends Model {
   }
 
   void addProduct(Product product) {
-    product.id = uuid.v1();
     _products.add(product);
     _selectedProductIndex = null;
   }
