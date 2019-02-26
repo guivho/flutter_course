@@ -24,15 +24,30 @@ class Product {
 
   Product toggleFavorite() {
     return Product(
-      id: this.id,
-      title: this.title,
-      description: this.description,
-      price: this.price,
-      imageUrl: this.imageUrl,
-      location: this.location,
-      userEmail: this.userEmail,
-      userId: this.userId,
-      isFavorite: !this.isFavorite,
+      id: id,
+      title: title,
+      description: description,
+      price: price,
+      imageUrl: imageUrl,
+      location: location,
+      userEmail: userEmail,
+      userId: userId,
+      isFavorite: !isFavorite,
     );
+  }
+
+  Map<String, dynamic> toMapForDb() {
+    return {
+      'id': id,
+      'title': title,
+      'description': description,
+      'price': price.toString(),
+      'location': location,
+      'imageUrl':
+          'https://cdn.pixabay.com/photo/2013/09/18/18/24/chocolate-183543_1280.jpg',
+      'isFavorite': isFavorite ? 1 : 0,
+      'userEmail': userEmail,
+      'userId': userId,
+    };
   }
 }

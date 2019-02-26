@@ -10,7 +10,7 @@ class ProductListTab extends StatelessWidget {
     return ScopedModelDescendant<MainModel>(
       builder: (BuildContext context, Widget child, MainModel model) {
         return ListView.builder(
-          itemCount: model.displayedProducts.length,
+          itemCount: model.allProducts.length,
           itemBuilder: (BuildContext context, int index) {
             return Dismissible(
               key: Key(model.displayedProducts[index].id),
@@ -54,7 +54,7 @@ class ProductListTab extends StatelessWidget {
               return ProductEditTab();
             },
           ),
-        );
+        ).then((_) => model.selectProduct(null));
       },
     );
   }

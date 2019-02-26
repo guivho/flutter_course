@@ -16,7 +16,8 @@ class FormData {
     this.description = '';
     this.price = 0.0;
     this.location = 'Union Square, San Francisco';
-    this.imageUrl = 'assets/food.jpg';
+    this.imageUrl =
+        'https://www.laurasbakery.nl/wp-content/uploads/2015/12/snelle-chocolade-fudge-1a.jpg';
     this.isFavorite = false;
   }
 
