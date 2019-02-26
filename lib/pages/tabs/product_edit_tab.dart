@@ -3,6 +3,7 @@ import '../../utils/constants.dart';
 import '../../models/product.dart';
 import 'package:scoped_model/scoped_model.dart';
 import '../../scoped-models/products_model.dart';
+import '../../models/form_data.dart';
 
 class ProductEditTab extends StatefulWidget {
   @override
@@ -10,7 +11,7 @@ class ProductEditTab extends StatefulWidget {
 }
 
 class _ProductEditTabState extends State<ProductEditTab> {
-  final Product _formData = Product();
+  final FormData _formData = FormData();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   @override
@@ -35,6 +36,7 @@ class _ProductEditTabState extends State<ProductEditTab> {
     final targetWidth = mediaWidth > 368.0 ? 368.0 : mediaWidth * 0.95;
     final targetPadding = (mediaWidth - targetWidth) / 2;
     final Product product = model.selectedProduct;
+    if (product != null) _formData.id = product.id;
     return GestureDetector(
       onTap: () {
         FocusScope.of(context).requestFocus(FocusNode());
@@ -75,9 +77,9 @@ class _ProductEditTabState extends State<ProductEditTab> {
         _formData.id = product.id;
       }
       if (product == null) {
-        model.addProduct(_formData);
+        model.addProduct(_formData.toProduct());
       } else {
-        model.updateProduct(_formData);
+        model.updateProduct(_formData.toProduct());
       }
       Navigator.pushReplacementNamed(context, PRODUCTSROUTE);
     }
