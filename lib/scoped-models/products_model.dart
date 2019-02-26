@@ -5,6 +5,7 @@ class ProductsModel extends Model {
   final List<Product> _products = [];
 
   int _selectedProductIndex;
+  bool _showFavoritesOnly = false;
 
   List<Product> get products {
     // copy the list and return the copy, not the original
@@ -12,8 +13,21 @@ class ProductsModel extends Model {
     return List.from(_products);
   }
 
+  List<Product> get displayedProducts {
+    // copy the list and return the copy, not the original
+    // to garantee immutability
+    if (_showFavoritesOnly) {
+      return List.from(_products.where((p) => p.isFavorite == true));
+    }
+    return List.from(_products);
+  }
+
   int get selectedProductIndex {
     return _selectedProductIndex;
+  }
+
+  bool get showFavoriteOnly {
+    return _showFavoritesOnly;
   }
 
   Product get selectedProduct {
@@ -60,5 +74,10 @@ class ProductsModel extends Model {
       updateProduct(_products[_selectedProductIndex].toggleFavorite());
       notifyListeners();
     }
+  }
+
+  void toggleShowFavorites() {
+    _showFavoritesOnly = !_showFavoritesOnly;
+    notifyListeners();
   }
 }
