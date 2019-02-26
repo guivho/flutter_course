@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
-import '../../utils/constants.dart';
-import '../../models/product.dart';
+import 'package:scoped_model/scoped_model.dart';
+import './address_tag.dart';
 import './price_tag.dart';
 import '../ui_elements/title_default.dart';
-import './address_tag.dart';
+import '../../models/product.dart';
+import '../../scoped-models/products_model.dart';
+import '../../utils/constants.dart';
 
 class ProductCard extends StatelessWidget {
   final CardType cardType;
@@ -84,16 +86,20 @@ class ProductCard extends StatelessWidget {
     );
   }
 
-  IconButton _buildFavoriteButton(BuildContext context) {
+  Widget _buildFavoriteButton(BuildContext context) {
     if (index == null) return null;
-    return IconButton(
-      icon: Icon(Icons.favorite_border),
-      color: Theme.of(context).primaryColor,
-      iconSize: 30.0,
-      onPressed: () => Navigator.pushNamed<bool>(
-            context,
-            '$PRODUCTROUTE/$index',
-          ),
+    return ScopedModelDescendant(
+      builder: (BuildContext context, Widget child, ProductsModel model) {
+        return IconButton(
+          icon: Icon(
+              model.isfavorite(index) ? Icons.favorite : Icons.favorite_border),
+          color: Theme.of(context).primaryColor,
+          iconSize: 30.0,
+          onPressed: () {
+            model.toggleFavorite(index);
+          },
+        );
+      },
     );
   }
 

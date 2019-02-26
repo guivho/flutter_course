@@ -7,6 +7,7 @@ class Product {
   final double price;
   final String location;
   final String imageUrl;
+  final bool isFavorite;
 
   Product({
     @required this.id,
@@ -15,5 +16,18 @@ class Product {
     @required this.price,
     @required this.location,
     @required this.imageUrl,
+    @required this.isFavorite,
   });
+
+  Product toggleFavorite() {
+    return Product(
+      id: this.id,
+      title: this.title,
+      description: this.description,
+      price: this.price,
+      imageUrl: this.imageUrl,
+      location: this.location,
+      isFavorite: !this.isFavorite,
+    );
+  }
 }

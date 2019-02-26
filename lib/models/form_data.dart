@@ -8,6 +8,7 @@ class FormData {
   double price;
   String location;
   String imageUrl;
+  bool isFavorite;
 
   FormData() {
     this.id = Uuid().v1();
@@ -16,6 +17,7 @@ class FormData {
     this.price = 0.0;
     this.location = 'Union Square, San Francisco';
     this.imageUrl = 'assets/food.jpg';
+    this.isFavorite = false;
   }
 
   Product toProduct() {
@@ -26,6 +28,7 @@ class FormData {
       price: this.price,
       location: this.location,
       imageUrl: this.imageUrl,
+      isFavorite: this.isFavorite,
     );
   }
 }

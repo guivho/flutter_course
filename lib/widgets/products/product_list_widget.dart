@@ -25,9 +25,9 @@ class ProductListWidget extends StatelessWidget {
     }
     return ListView.builder(
       itemCount: products.length,
-      itemBuilder: (BuildContext context, int index) => ProductCard(
-            product: products[index],
-            index: index,
+      itemBuilder: (BuildContext context, int productIndex) => ProductCard(
+            product: products[productIndex],
+            index: productIndex,
             cardType: CardType.list,
           ),
     );
