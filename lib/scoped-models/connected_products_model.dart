@@ -4,6 +4,7 @@ import 'package:http/http.dart' as http;
 import 'package:scoped_model/scoped_model.dart';
 import 'package:uuid/uuid.dart';
 
+import '../models/form_data.dart';
 import '../models/product.dart';
 import '../models/user.dart';
 import '../utils/constants.dart';
@@ -14,35 +15,16 @@ mixin ConnectedProductsModel on Model {
   int _selectedProductIndex;
   bool _showFavoritesOnly = false;
 
-  Product userProduct(Product product) {
-    return Product(
-      id: product.id,
-      title: product.title,
-      description: product.description,
-      price: product.price,
-      imageUrl: product.imageUrl,
-      location: product.location,
-      isFavorite: product.isFavorite,
-      userEmail: product.userEmail == null || product.userEmail == ''
-          ? _authenticatedUser.email
-          : product.userEmail,
-      userId: product.userId == null || product.userId == ''
-          ? _authenticatedUser.id
-          : product.userId,
-    );
-  }
-
-  void addProduct(Product product) {
-    final Map<String, dynamic> productData = {
-      'title': product.title,
-      'description': product.description,
-      'imageUrl':
-          'https://cdn.pixabay.com/photo/2013/09/18/18/24/chocolate-183543_1280.jpg',
-      'price': product.price,
-    };
-    http.post('$DBSERVER$PRODUCTS$JSON', body: json.encode(productData));
-    _products.add(userProduct(product));
-    notifyListeners();
+  void addProduct(FormData formData) {
+    final Map<String, dynamic> productData =
+        formData.toProductData(_authenticatedUser.email, _authenticatedUser.id);
+    http
+        .post('$DBSERVER$PRODUCTS$JSON', body: json.encode(productData))
+        .then((http.Response response) {
+      final Product newProduct = Product.fromJson(json.decode(response.body));
+      _products.add(newProduct);
+      notifyListeners();
+    });
   }
 }
 
@@ -86,8 +68,8 @@ mixin ProductsModel on ConnectedProductsModel {
 
   void toggleFavorite(int index) {
     if (index >= 0 && index < _products.length) {
-      _selectedProductIndex = index;
-      updateProduct(_products[_selectedProductIndex].toggleFavorite());
+      _products[_selectedProductIndex] =
+          Product.favoriteToggled(_products[index]);
       notifyListeners();
     }
   }
@@ -101,8 +83,9 @@ mixin ProductsModel on ConnectedProductsModel {
     }
   }
 
-  void updateProduct(Product product) {
-    _products[_selectedProductIndex] = product;
+  void updateProduct(FormData formData) {
+    _products[_selectedProductIndex] =
+        Product.fromForm(_products[_selectedProductIndex].id, formData);
     notifyListeners();
   }
 

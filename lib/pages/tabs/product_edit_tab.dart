@@ -37,7 +37,7 @@ class _ProductEditTabState extends State<ProductEditTab> {
     final targetWidth = mediaWidth > 368.0 ? 368.0 : mediaWidth * 0.95;
     final targetPadding = (mediaWidth - targetWidth) / 2;
     final Product product = model.selectedProduct;
-    if (product != null) _formData.id = product.id;
+    // if (product != null) _formData.id = product.id;
     return GestureDetector(
       onTap: () {
         FocusScope.of(context).requestFocus(FocusNode());
@@ -74,13 +74,13 @@ class _ProductEditTabState extends State<ProductEditTab> {
     // alternative to autovalidate
     if (_formKey.currentState.validate()) {
       _formKey.currentState.save();
-      if (product != null) {
-        _formData.id = product.id;
-      }
+      // if (product != null) {
+      //   _formData.id = product.id;
+      // }
       if (product == null) {
-        model.addProduct(_formData.toProduct());
+        model.addProduct(_formData);
       } else {
-        model.updateProduct(_formData.toProduct());
+        model.updateProduct(_formData);
       }
       Navigator.pushReplacementNamed(context, PRODUCTSROUTE)
           .then((_) => model.selectProduct(null));
