@@ -5,14 +5,27 @@ import '../utils/constants.dart';
 import '../widgets/products/product_list_widget.dart';
 import '../widgets/ui_elements/left_drawer.dart';
 
-class ProductsPage extends StatelessWidget {
-  ProductsPage() {
-    print('products_page] Constructor');
+class ProductsPage extends StatefulWidget {
+  final MainModel model;
+
+  ProductsPage(this.model) {
+    print('[products_page] Constructor');
+  }
+
+  @override
+  _ProductsPageState createState() => new _ProductsPageState();
+}
+
+class _ProductsPageState extends State<ProductsPage> {
+  @override
+  void initState() {
+    widget.model.fetchProducts();
+    super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    print('products_page] Build');
+    print('[products_page] Build');
     return Scaffold(
       drawer: LeftDrawer(DrawerType.fromListToAdmin),
       appBar: AppBar(

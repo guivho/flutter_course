@@ -16,8 +16,8 @@ class FormData {
     this.description = '';
     this.price = 0.0;
     this.location = 'Union Square, San Francisco';
-    this.imageUrl =
-        'https://cdn.pixabay.com/photo/2013/09/18/18/24/chocolate-183543_1280.jpg';
+    this.imageUrl = // 'assets/food.jpg';
+        'https://cdn.pixabay.com/photo/2015/10/02/12/00/chocolate-968457_960_720.jpg';
     this.isFavorite = false;
     this.userEmail = '';
     this.userId = '';

@@ -26,7 +26,7 @@ class ProductCard extends StatelessWidget {
     return Card(
       child: Column(
         children: <Widget>[
-          Image.asset(product.imageUrl),
+          _buildImage(product.imageUrl),
           _buildTitleAndPriceRow(context),
           AddressTag(product.location),
           _buildButtonBar(context),
@@ -37,6 +37,10 @@ class ProductCard extends StatelessWidget {
         ],
       ),
     );
+  }
+
+  Widget _buildImage(String imageUrl) {
+    return Image.network(imageUrl);
   }
 
   Container _buildUserEmail() {
@@ -65,7 +69,7 @@ class ProductCard extends StatelessWidget {
     }
     return Container(
       margin: EdgeInsets.symmetric(horizontal: 10.0),
-      child: Text(product.id),
+      child: Text(product.productId),
     );
   }
 

@@ -19,15 +19,14 @@ class _AppState extends State<App> {
   //final String _product = 'Food tester';
   Widget build(BuildContext context) {
     print('[app] build');
+    final MainModel model = MainModel();
     return ScopedModel<MainModel>(
-      // here we create the model that will be used
-      // in the complete tree built by _buildMaterialApp
-      model: MainModel(),
-      child: _buildMaterialApp(),
+      model: model,
+      child: _buildMaterialApp(model),
     );
   }
 
-  MaterialApp _buildMaterialApp() {
+  MaterialApp _buildMaterialApp(MainModel model) {
     return MaterialApp(
       // debugShowMaterialGrid: true,
       theme: ThemeData(
@@ -39,14 +38,14 @@ class _AppState extends State<App> {
         // fontFamily: 'Oswald',
       ),
       // home: AuthPage(),
-      routes: defineRoutes(context),
+      routes: defineRoutes(context, model),
       onGenerateRoute: (RouteSettings settings) {
         return defineOnGenerateRoute(context, settings);
       },
       onUnknownRoute: (RouteSettings settings) {
         print('CAVE: unknown route ${settings.name}');
         return MaterialPageRoute(
-            builder: (BuildContext context) => ProductsPage());
+            builder: (BuildContext context) => ProductsPage(model));
       },
     );
   }
@@ -64,10 +63,11 @@ class _AppState extends State<App> {
     return null;
   }
 
-  Map<String, WidgetBuilder> defineRoutes(BuildContext context) {
+  Map<String, WidgetBuilder> defineRoutes(
+      BuildContext context, MainModel model) {
     return {
       ADMINROUTE: (BuildContext context) => ProductsAdminPage(),
-      PRODUCTSROUTE: (BuildContext context) => ProductsPage(),
+      PRODUCTSROUTE: (BuildContext context) => ProductsPage(model),
       AUTHROUTE: (BuildContext context) => AuthPage(),
     };
   }

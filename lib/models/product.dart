@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import './form_data.dart';
 
 class Product {
-  final String id;
+  final String productId;
   final String title;
   final String description;
   final double price;
@@ -14,7 +14,7 @@ class Product {
   final String userId;
 
   Product(
-      {@required this.id,
+      {@required this.productId,
       @required this.title,
       @required this.description,
       @required this.price,
@@ -25,7 +25,7 @@ class Product {
       @required this.userId});
 
   Product.favoriteToggled(Product productToToggle)
-      : id = productToToggle.id,
+      : productId = productToToggle.productId,
         title = productToToggle.title,
         description = productToToggle.description,
         price = productToToggle.price,
@@ -35,8 +35,8 @@ class Product {
         userEmail = productToToggle.userEmail,
         userId = productToToggle.userId;
 
-  Product.fromForm(String id, FormData formData)
-      : id = id,
+  Product.fromForm(String productId, FormData formData)
+      : productId = productId,
         title = formData.title,
         description = formData.description,
         price = formData.price,
@@ -46,14 +46,30 @@ class Product {
         userEmail = formData.userEmail,
         userId = formData.userId;
 
-  Product.fromJson(Map<String, dynamic> data)
-      : id = data['name'],
-        title = data['title'],
-        description = data['description'],
-        price = double.parse(data['price']),
-        imageUrl = data['imageUrl'],
-        location = data['location'],
-        isFavorite = data['isFavorite'] == 1,
-        userEmail = data['userEmail'],
-        userId = data['userId'];
+  Product.fromJson(String productId, dynamic productData)
+      // the productData is really a Map<String, dynamic>
+      : productId = productId,
+        title = productData['title'],
+        description = productData['description'],
+        price = productData['price'],
+        imageUrl = productData['imageUrl'],
+        location = productData['location'],
+        isFavorite = productData['isFavorite'],
+        userEmail = productData['userEmail'],
+        userId = productData['userId'];
+
+  @override
+  String toString() {
+    return '''{
+  productId:$productId,
+  title:'$title',
+  description:'$description',
+  price:$price,
+  imageUrl:'$imageUrl',
+  location:'$location',
+  isFavorite:$isFavorite,
+  userEmail:'$userEmail',
+  userId:'$userId',
+}''';
+  }
 }

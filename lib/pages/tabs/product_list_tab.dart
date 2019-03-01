@@ -13,7 +13,7 @@ class ProductListTab extends StatelessWidget {
           itemCount: model.allProducts.length,
           itemBuilder: (BuildContext context, int index) {
             return Dismissible(
-              key: Key(model.displayedProducts[index].id),
+              key: Key(model.displayedProducts[index].productId),
               background: Container(color: Colors.red),
               onDismissed: (DismissDirection direction) {
                 if (direction == DismissDirection.endToStart) {
@@ -26,7 +26,7 @@ class ProductListTab extends StatelessWidget {
                   ListTile(
                     leading: CircleAvatar(
                       backgroundImage:
-                          AssetImage(model.displayedProducts[index].imageUrl),
+                          NetworkImage(model.displayedProducts[index].imageUrl),
                     ),
                     title: Text(model.displayedProducts[index].title),
                     subtitle: Text(

@@ -10,19 +10,39 @@ import '../models/user.dart';
 import '../utils/constants.dart';
 
 mixin ConnectedProductsModel on Model {
-  final List<Product> _products = [];
+  List<Product> _products = [];
   User _authenticatedUser;
   int _selectedProductIndex;
   bool _showFavoritesOnly = false;
 
   void addProduct(FormData formData) {
-    final Map<String, dynamic> productData =
-        formData.toProductData(_authenticatedUser.email, _authenticatedUser.id);
+    final Map<String, dynamic> productData = formData.toProductData(
+        _authenticatedUser.email, _authenticatedUser.userId);
+    print('productData: $productData');
     http
-        .post('$DBSERVER$PRODUCTS$JSON', body: json.encode(productData))
+        .post(PRODUCTSURL, body: json.encode(productData))
         .then((http.Response response) {
-      final Product newProduct = Product.fromJson(json.decode(response.body));
+      // print('response.body: ${response.body}');
+      print('response.body: ${response.body}');
+      final Map<String, dynamic> jsonData = json.decode(response.body);
+      print('jsonData: $jsonData');
+      final Product newProduct = Product.fromJson(jsonData[NAME], productData);
+      print('newProduct: $newProduct');
       _products.add(newProduct);
+      print('_products: $_products');
+      notifyListeners();
+    });
+  }
+
+  void fetchProducts() {
+    print('[model] fetchProducts');
+    final List<Product> fetchedProductList = [];
+    http.get(PRODUCTSURL).then((http.Response response) {
+      Map<String, dynamic> productListData = json.decode(response.body);
+      productListData.forEach((String productId, dynamic productData) {
+        fetchedProductList.add(Product.fromJson(productId, productData));
+      });
+      _products = fetchedProductList;
       notifyListeners();
     });
   }
@@ -53,10 +73,11 @@ mixin ProductsModel on ConnectedProductsModel {
   List<Product> get displayedProducts {
     // copy the list and return the copy, not the original
     // to garantee immutability
-    if (_showFavoritesOnly) {
-      return List.from(_products.where((p) => p.isFavorite == true));
-    }
-    return _products;
+    final List<Product> products = _showFavoritesOnly
+        ? List.from(_products.where((p) => p.isFavorite == true))
+        : List.from(_products);
+    print('displayedProducts: $products');
+    return products;
   }
 
   bool isFavorite(int index) {
@@ -85,7 +106,7 @@ mixin ProductsModel on ConnectedProductsModel {
 
   void updateProduct(FormData formData) {
     _products[_selectedProductIndex] =
-        Product.fromForm(_products[_selectedProductIndex].id, formData);
+        Product.fromForm(_products[_selectedProductIndex].productId, formData);
     notifyListeners();
   }
 
@@ -103,7 +124,7 @@ mixin ProductsModel on ConnectedProductsModel {
 mixin UsersModel on ConnectedProductsModel {
   void login(String email, String password) {
     _authenticatedUser = User(
-      id: Uuid().v1(),
+      userId: Uuid().v1(),
       email: email,
       password: password,
     );
