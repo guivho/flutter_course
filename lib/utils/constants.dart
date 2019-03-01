@@ -4,6 +4,7 @@ const String AUTHROUTE = '/';
 const String DBSERVER = 'https://flutter-products-8fcda.firebaseio.com/';
 const String JSON = '.json';
 const String NAME = 'name';
+const String NOPRODUCTS = 'No products found';
 const String PRODUCT = 'product';
 const String PRODUCTROUTE = '/$PRODUCT';
 const String PRODUCTS = 'products';

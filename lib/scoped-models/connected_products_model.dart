@@ -13,11 +13,13 @@ mixin ConnectedProductsModel on Model {
   List<Product> _products = [];
   User _authenticatedUser;
   int _selectedProductIndex;
-  bool _showFavoritesOnly = false;
+  bool _isLoading = false;
 
   void addProduct(FormData formData) {
+    _isLoading = true;
+    notifyListeners();
     final Map<String, dynamic> productData = formData.toProductData(
-        _authenticatedUser.email, _authenticatedUser.userId);
+        authenticatedUser.email, authenticatedUser.userId);
     print('productData: $productData');
     http
         .post(PRODUCTSURL, body: json.encode(productData))
@@ -30,25 +32,49 @@ mixin ConnectedProductsModel on Model {
       print('newProduct: $newProduct');
       _products.add(newProduct);
       print('_products: $_products');
+      _isLoading = false;
       notifyListeners();
     });
   }
 
   void fetchProducts() {
+    _isLoading = true;
+    notifyListeners();
     print('[model] fetchProducts');
     final List<Product> fetchedProductList = [];
     http.get(PRODUCTSURL).then((http.Response response) {
       Map<String, dynamic> productListData = json.decode(response.body);
-      productListData.forEach((String productId, dynamic productData) {
-        fetchedProductList.add(Product.fromJson(productId, productData));
-      });
-      _products = fetchedProductList;
+      if (productListData == null) {
+        _products = [];
+      } else {
+        productListData.forEach((String productId, dynamic productData) {
+          fetchedProductList.add(Product.fromJson(productId, productData));
+        });
+        _products = fetchedProductList;
+      }
+      _isLoading = false;
       notifyListeners();
     });
+  }
+
+  bool get isLoading {
+    return _isLoading;
+  }
+
+  // Hack: restarting app looses _authenticatedUser
+  User get authenticatedUser {
+    return _authenticatedUser != null
+        ? _authenticatedUser
+        : User(
+            userId: Uuid().v1(),
+            email: 'unknown',
+            password: 'not relevant',
+          );
   }
 }
 
 mixin ProductsModel on ConnectedProductsModel {
+  bool _showFavoritesOnly = false;
   bool get showFavoriteOnly {
     return _showFavoritesOnly;
   }
@@ -89,8 +115,7 @@ mixin ProductsModel on ConnectedProductsModel {
 
   void toggleFavorite(int index) {
     if (index >= 0 && index < _products.length) {
-      _products[_selectedProductIndex] =
-          Product.favoriteToggled(_products[index]);
+      _products[index] = Product.favoriteToggled(_products[index]);
       notifyListeners();
     }
   }
@@ -105,8 +130,10 @@ mixin ProductsModel on ConnectedProductsModel {
   }
 
   void updateProduct(FormData formData) {
+    _isLoading = true;
     _products[_selectedProductIndex] =
         Product.fromForm(_products[_selectedProductIndex].productId, formData);
+    _isLoading = false;
     notifyListeners();
   }
 
