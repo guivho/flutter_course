@@ -145,8 +145,15 @@ mixin ProductsModel on ConnectedProductsModel {
   }
 
   void deleteProduct() {
-    _products.removeAt(selectedProductIndex);
+    _isLoading = true;
     notifyListeners();
+    final String id = _products[_selectedProductIndex].productId;
+    http.delete('$DBSERVER$PRODUCTS/$id$JSON').then((http.Response response) {
+      _products.removeAt(selectedProductIndex);
+      _selectedProductIndex = null;
+      _isLoading = false;
+      notifyListeners();
+    });
   }
 
   void toggleShowFavorites() {

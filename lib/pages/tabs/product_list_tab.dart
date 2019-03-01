@@ -3,6 +3,8 @@ import 'package:scoped_model/scoped_model.dart';
 
 import './product_edit_tab.dart';
 import '../../scoped-models/main_model.dart';
+import '../../widgets/ui_elements/no_products.dart';
+import '../../widgets/ui_elements/spinner.dart';
 
 class ProductListTab extends StatefulWidget {
   final MainModel model;
@@ -23,36 +25,40 @@ class _ProductListTabState extends State<ProductListTab> {
   Widget build(BuildContext context) {
     return ScopedModelDescendant<MainModel>(
       builder: (BuildContext context, Widget child, MainModel model) {
-        return ListView.builder(
-          itemCount: model.allProducts.length,
-          itemBuilder: (BuildContext context, int index) {
-            return Dismissible(
-              key: Key(model.displayedProducts[index].productId),
-              background: Container(color: Colors.red),
-              onDismissed: (DismissDirection direction) {
-                if (direction == DismissDirection.endToStart) {
-                  model.selectProduct(index);
-                  model.deleteProduct();
-                }
-              },
-              child: Column(
-                children: <Widget>[
-                  ListTile(
-                    leading: CircleAvatar(
-                      backgroundImage:
-                          NetworkImage(model.displayedProducts[index].imageUrl),
-                    ),
-                    title: Text(model.displayedProducts[index].title),
-                    subtitle: Text(
-                        '€${model.displayedProducts[index].price.toString()}'),
-                    trailing: _buildEditButton(context, index, model),
-                  ),
-                  Divider(),
-                ],
-              ),
-            );
-          },
-        );
+        return model.isLoading
+            ? Spinner()
+            : model.allProducts.length <= 0
+                ? NoProducts()
+                : ListView.builder(
+                    itemCount: model.allProducts.length,
+                    itemBuilder: (BuildContext context, int index) {
+                      return Dismissible(
+                        key: Key(model.displayedProducts[index].productId),
+                        background: Container(color: Colors.red),
+                        onDismissed: (DismissDirection direction) {
+                          if (direction == DismissDirection.endToStart) {
+                            model.selectProduct(index);
+                            model.deleteProduct();
+                          }
+                        },
+                        child: Column(
+                          children: <Widget>[
+                            ListTile(
+                              leading: CircleAvatar(
+                                backgroundImage: NetworkImage(
+                                    model.displayedProducts[index].imageUrl),
+                              ),
+                              title: Text(model.displayedProducts[index].title),
+                              subtitle: Text(
+                                  '€${model.displayedProducts[index].price.toString()}'),
+                              trailing: _buildEditButton(context, index, model),
+                            ),
+                            Divider(),
+                          ],
+                        ),
+                      );
+                    },
+                  );
       },
     );
   }
