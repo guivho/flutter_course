@@ -17,18 +17,19 @@ class ProductListWidget extends StatelessWidget {
     print('[product_list_widget] Build');
     return ScopedModelDescendant<MainModel>(
         builder: (BuildContext context, _, MainModel model) {
-      if (model.isLoading) return Spinner();
-      if (model.displayedProducts.length <= 0) return NoProducts();
-      return model.isLoading
+      Widget content = model.isLoading
           ? Spinner()
-          : _buildProductList(model.displayedProducts);
+          : model.displayedProducts.length <= 0
+              ? NoProducts()
+              : _buildProductList(model.displayedProducts);
+      return RefreshIndicator(
+        child: content,
+        onRefresh: model.fetchProducts, // Must return a future
+      );
     });
   }
 
   Widget _buildProductList(List<Product> products) {
-    if (products.length == 0) {
-      return Container();
-    }
     return ListView.builder(
       itemCount: products.length,
       itemBuilder: (BuildContext context, int productIndex) => ProductCard(

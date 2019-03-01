@@ -37,12 +37,13 @@ mixin ConnectedProductsModel on Model {
     });
   }
 
-  void fetchProducts() {
+  // Future only returned to be able to use RefreshIndicator
+  Future<Null> fetchProducts() {
     _isLoading = true;
     notifyListeners();
     print('[model] fetchProducts');
     final List<Product> fetchedProductList = [];
-    http.get(PRODUCTSURL).then((http.Response response) {
+    return http.get(PRODUCTSURL).then((http.Response response) {
       Map<String, dynamic> productListData = json.decode(response.body);
       if (productListData == null) {
         _products = [];
