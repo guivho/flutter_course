@@ -4,7 +4,21 @@ import 'package:scoped_model/scoped_model.dart';
 import './product_edit_tab.dart';
 import '../../scoped-models/main_model.dart';
 
-class ProductListTab extends StatelessWidget {
+class ProductListTab extends StatefulWidget {
+  final MainModel model;
+  ProductListTab(this.model);
+
+  @override
+  _ProductListTabState createState() => new _ProductListTabState();
+}
+
+class _ProductListTabState extends State<ProductListTab> {
+  @override
+  void initState() {
+    widget.model.fetchProducts();
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return ScopedModelDescendant<MainModel>(

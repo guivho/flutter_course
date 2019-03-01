@@ -66,7 +66,7 @@ class _AppState extends State<App> {
   Map<String, WidgetBuilder> defineRoutes(
       BuildContext context, MainModel model) {
     return {
-      ADMINROUTE: (BuildContext context) => ProductsAdminPage(),
+      ADMINROUTE: (BuildContext context) => ProductsAdminPage(model),
       PRODUCTSROUTE: (BuildContext context) => ProductsPage(model),
       AUTHROUTE: (BuildContext context) => AuthPage(),
     };

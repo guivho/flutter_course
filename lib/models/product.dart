@@ -42,7 +42,7 @@ class Product {
         price = formData.price,
         imageUrl = formData.imageUrl,
         location = formData.location,
-        isFavorite = !formData.isFavorite,
+        isFavorite = formData.isFavorite,
         userEmail = formData.userEmail,
         userId = formData.userId;
 
@@ -57,6 +57,19 @@ class Product {
         isFavorite = productData['isFavorite'],
         userEmail = productData['userEmail'],
         userId = productData['userId'];
+
+  Map<String, dynamic> toProductData() {
+    return {
+      'title': title,
+      'description': description,
+      'price': price,
+      'imageUrl': imageUrl,
+      'location': location,
+      'isFavorite': isFavorite,
+      'userEmail': userEmail,
+      'userId': userId,
+    };
+  }
 
   @override
   String toString() {

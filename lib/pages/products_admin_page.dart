@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
 import './tabs/product_edit_tab.dart';
 import './tabs/product_list_tab.dart';
+import '../scoped-models/main_model.dart';
 import '../utils/constants.dart';
-import './../widgets/ui_elements/left_drawer.dart';
+import '../widgets/ui_elements/left_drawer.dart';
 
 class ProductsAdminPage extends StatelessWidget {
-  ProductsAdminPage() {
+  final MainModel model;
+
+  ProductsAdminPage(this.model) {
     print('[ProductsAdminPage] constructor');
   }
 
@@ -41,7 +44,7 @@ class ProductsAdminPage extends StatelessWidget {
     return TabBarView(
       children: <Widget>[
         ProductEditTab(),
-        ProductListTab(),
+        ProductListTab(model),
       ],
     );
   }

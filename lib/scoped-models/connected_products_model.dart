@@ -131,10 +131,17 @@ mixin ProductsModel on ConnectedProductsModel {
 
   void updateProduct(FormData formData) {
     _isLoading = true;
-    _products[_selectedProductIndex] =
-        Product.fromForm(_products[_selectedProductIndex].productId, formData);
-    _isLoading = false;
     notifyListeners();
+    final String id = _products[_selectedProductIndex].productId;
+    final Product product = Product.fromForm(id, formData);
+    final Map<String, dynamic> productData = product.toProductData();
+    http
+        .put('$DBSERVER$PRODUCTS/$id$JSON', body: json.encode(productData))
+        .then((http.Response response) {
+      _products[_selectedProductIndex] = product;
+      _isLoading = false;
+      notifyListeners();
+    });
   }
 
   void deleteProduct() {
