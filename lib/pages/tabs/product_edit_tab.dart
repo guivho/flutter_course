@@ -5,6 +5,7 @@ import '../../models/form_data.dart';
 import '../../models/product.dart';
 import '../../scoped-models/main_model.dart';
 import '../../utils/constants.dart';
+import '../../utils/util.dart';
 
 class ProductEditTab extends StatefulWidget {
   final Product product;
@@ -78,17 +79,21 @@ class _ProductEditTabState extends State<ProductEditTab> {
     // alternative to autovalidate
     if (_formKey.currentState.validate()) {
       _formKey.currentState.save();
-      // if (product != null) {
-      //   _formData.id = product.id;
-      // }
+      bool succes;
       if (product == null) {
-        model.addProduct(_formData);
+        model.addProduct(_formData).then((bool ok) {
+          succes = ok;
+        });
       } else {
-        model.updateProduct(product.productId, _formData);
+        model.updateProduct(product.productId, _formData).then((bool ok) {
+          succes = ok;
+        });
       }
-      Navigator.pushReplacementNamed(context, PRODUCTSROUTE)
-          // .then((_) => model.selectProduct(null))
-          ;
+      if (succes) {
+        Navigator.pushReplacementNamed(context, PRODUCTSROUTE);
+      } else {
+        Util.showErrorDialog(context);
+      }
     }
   }
 

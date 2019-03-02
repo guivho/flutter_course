@@ -5,6 +5,7 @@ import '../../scoped-models/main_model.dart';
 import '../../widgets/ui_elements/no_products.dart';
 import '../../widgets/ui_elements/spinner.dart';
 import '../../utils/constants.dart';
+import '../../utils/util.dart';
 import '../../models/product.dart';
 
 class ProductListWidget extends StatelessWidget {
@@ -23,9 +24,10 @@ class ProductListWidget extends StatelessWidget {
               ? NoProducts()
               : _buildProductList(model.displayedProducts, model);
       return RefreshIndicator(
-        child: content,
-        onRefresh: model.fetchProducts, // Must return a future
-      );
+          child: content,
+          onRefresh: () => model.fetchProducts().then((bool ok) {
+                if (!ok) Util.showErrorDialog(context);
+              }));
     });
   }
 

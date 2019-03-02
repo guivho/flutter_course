@@ -14,39 +14,46 @@ mixin ConnectedProductsModel on Model {
   User _authenticatedUser;
   bool _isLoading = false;
 
-  void addProduct(FormData formData) {
+  Future<bool> addProduct(FormData formData) {
     _isLoading = true;
     notifyListeners();
     final Map<String, dynamic> productData = formData.toProductData(
         authenticatedUser.email, authenticatedUser.userId);
-    print('productData: $productData');
-    http
+    return http
         .post(PRODUCTSURL, body: json.encode(productData))
         .then((http.Response response) {
-      print('response.body: ${response.body}');
+      if (response.statusCode != 200 && response.statusCode != 201) {
+        print('(addProduct) statusCode: ${response.statusCode}');
+        return false;
+      }
       final Map<String, dynamic> jsonData = json.decode(response.body);
-      print('jsonData: $jsonData');
       final Product newProduct = Product.fromJson(jsonData[NAME], productData);
-      print('newProduct: $newProduct');
       _products[newProduct.productId] = newProduct;
-      print('_products: $_products');
       _isLoading = false;
       notifyListeners();
+      return true;
     });
   }
 
   void _removeAllProducts() {
+    // delete local copies before fetchng from server
     _products.removeWhere((String key, Product product) {
       return key != null;
     });
   }
 
   // Future only returned to be able to use RefreshIndicator
-  Future<Null> fetchProducts() {
+  Future<bool> fetchProducts() {
     _isLoading = true;
     notifyListeners();
     print('[model] fetchProducts');
     return http.get(PRODUCTSURL).then((http.Response response) {
+      if (response.statusCode != 200 && response.statusCode != 201) {
+        print('(fetchProducts) statusCode: ${response.statusCode}');
+        _isLoading = false;
+        notifyListeners();
+        return false;
+      }
       Map<String, dynamic> productListData = json.decode(response.body);
       _removeAllProducts();
       if (productListData != null) {
@@ -56,6 +63,12 @@ mixin ConnectedProductsModel on Model {
       }
       _isLoading = false;
       notifyListeners();
+      return true;
+    }).catchError((error) {
+      print('(fetchProducts) catchError: $error');
+      _isLoading = false;
+      notifyListeners();
+      return false;
     });
   }
 
@@ -100,35 +113,58 @@ mixin ProductsModel on ConnectedProductsModel {
     return null;
   }
 
-  void toggleFavorite(String productId) {
-    _products[productId] = Product.favoriteToggled(_products[productId]);
-    notifyListeners();
+  Future<bool> toggleFavorite(String productId) {
+    return _updateProduct(Product.favoriteToggled(_products[productId]));
   }
 
-  void updateProduct(String productId, FormData formData) {
+  Future<bool> updateProduct(String productId, FormData formData) {
+    final Product product = Product.fromForm(productId, formData);
+    return _updateProduct(product);
+  }
+
+  Future<bool> _updateProduct(Product product) {
     _isLoading = true;
     notifyListeners();
-    final Product product = Product.fromForm(productId, formData);
     final Map<String, dynamic> productData = product.toProductData();
-    http
-        .put('$DBSERVER$PRODUCTS/$productId$JSON',
+    return http
+        .put('$DBSERVER$PRODUCTS/${product.productId}$JSON',
             body: json.encode(productData))
         .then((http.Response response) {
-      _products[productId] = product;
+      if (response.statusCode != 200 && response.statusCode != 201) {
+        print('(updateProduct) statusCode: ${response.statusCode}');
+        return false;
+      }
+      _products[product.productId] = product;
       _isLoading = false;
       notifyListeners();
+      return true;
+    }).catchError((error) {
+      print('(_updateProduct) catchError: $error');
+      _isLoading = false;
+      notifyListeners();
+      return false;
     });
   }
 
-  void deleteProduct(String productId) {
+  Future<bool> deleteProduct(String productId) {
     _isLoading = true;
     notifyListeners();
-    http
+    return http
         .delete('$DBSERVER$PRODUCTS/$productId$JSON')
         .then((http.Response response) {
+      if (response.statusCode != 200 && response.statusCode != 201) {
+        print('(deleteProduct) statusCode: ${response.statusCode}');
+        return false;
+      }
       _products.remove(productId);
       _isLoading = false;
       notifyListeners();
+      return true;
+    }).catchError((error) {
+      print('(deleteProduct) catchError: $error');
+      _isLoading = false;
+      notifyListeners();
+      return false;
     });
   }
 

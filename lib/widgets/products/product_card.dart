@@ -6,6 +6,7 @@ import '../ui_elements/title_default.dart';
 import '../../models/product.dart';
 import '../../scoped-models/main_model.dart';
 import '../../utils/constants.dart';
+import '../../utils/util.dart';
 
 class ProductCard extends StatelessWidget {
   final CardType cardType;
@@ -128,7 +129,9 @@ class ProductCard extends StatelessWidget {
           color: Theme.of(context).primaryColor,
           iconSize: 30.0,
           onPressed: () {
-            model.toggleFavorite(product.productId);
+            model.toggleFavorite(product.productId).then((bool ok) {
+              if (!ok) Util.showErrorDialog(context);
+            });
           },
         );
       },
@@ -176,9 +179,15 @@ class ProductCard extends StatelessWidget {
             FlatButton(
               child: Text('DO DELETE'),
               onPressed: () {
-                model.deleteProduct(product.productId);
-                Navigator.pop(context); // dismiss the dialog
-                Navigator.pop(context, true); // go back to delete
+                model.deleteProduct(product.productId).then((bool ok) {
+                  if (!ok) {
+                    Util.showErrorDialog(context);
+                    Navigator.pop(context); // dismiss the dialog
+                  } else {
+                    Navigator.pop(context); // dismiss the dialog
+                    Navigator.pop(context, true); // go back to list
+                  }
+                });
               },
             ),
           ],

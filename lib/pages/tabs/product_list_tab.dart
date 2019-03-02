@@ -4,6 +4,7 @@ import 'package:scoped_model/scoped_model.dart';
 import './product_edit_tab.dart';
 import '../../models/product.dart';
 import '../../scoped-models/main_model.dart';
+import '../../utils/util.dart';
 import '../../widgets/ui_elements/no_products.dart';
 import '../../widgets/ui_elements/spinner.dart';
 
@@ -18,7 +19,9 @@ class ProductListTab extends StatefulWidget {
 class _ProductListTabState extends State<ProductListTab> {
   @override
   void initState() {
-    widget.model.fetchProducts();
+    widget.model.fetchProducts().then((bool ok) {
+      if (!ok) Util.showErrorDialog(context);
+    });
     super.initState();
   }
 
@@ -50,8 +53,9 @@ class _ProductListTabState extends State<ProductListTab> {
       background: Container(color: Colors.red),
       onDismissed: (DismissDirection direction) {
         if (direction == DismissDirection.endToStart) {
-          // model.selectProduct(product.productId);
-          model.deleteProduct(product.productId);
+          model.deleteProduct(product.productId).then((bool ok) {
+            if (!ok) Util.showErrorDialog(context);
+          });
         }
       },
       child: _buildPoductTile(model, product),
