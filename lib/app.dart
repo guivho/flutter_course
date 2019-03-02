@@ -40,7 +40,7 @@ class _AppState extends State<App> {
       // home: AuthPage(),
       routes: defineRoutes(context, model),
       onGenerateRoute: (RouteSettings settings) {
-        return defineOnGenerateRoute(context, settings);
+        return defineOnGenerateRoute(context, settings, model);
       },
       onUnknownRoute: (RouteSettings settings) {
         print('CAVE: unknown route ${settings.name}');
@@ -51,13 +51,14 @@ class _AppState extends State<App> {
   }
 
   Route<dynamic> defineOnGenerateRoute(
-      BuildContext context, RouteSettings settings) {
+      BuildContext context, RouteSettings settings, MainModel model) {
     final List<String> pathElements = settings.name.split('/');
     // valid paths must start with '/'
     if (pathElements[0] == '' && pathElements[1] == PRODUCT) {
-      final int index = int.parse(pathElements[2]);
+      final String productId = pathElements[2];
+      // model.selectProduct(productId);
       return MaterialPageRoute<bool>(
-        builder: (BuildContext context) => ProductPage(index),
+        builder: (BuildContext context) => ProductPage(productId),
       );
     }
     return null;

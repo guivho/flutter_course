@@ -7,9 +7,8 @@ import '../utils/constants.dart';
 import '../widgets/products/product_card.dart';
 
 class ProductPage extends StatelessWidget {
-  final int productIndex;
-
-  ProductPage(this.productIndex);
+  final String productId;
+  ProductPage(this.productId);
 
   @override
   Widget build(BuildContext context) {
@@ -21,7 +20,7 @@ class ProductPage extends StatelessWidget {
       },
       child: ScopedModelDescendant<MainModel>(
         builder: (BuildContext context, Widget child, MainModel model) {
-          final Product product = model.displayedProducts[productIndex];
+          final Product product = model.productWithId(productId);
           return Scaffold(
             appBar: AppBar(
               title: Text(product.title),

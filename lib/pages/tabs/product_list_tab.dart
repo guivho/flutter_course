@@ -49,7 +49,7 @@ class _ProductListTabState extends State<ProductListTab> {
       background: Container(color: Colors.red),
       onDismissed: (DismissDirection direction) {
         if (direction == DismissDirection.endToStart) {
-          model.selectProduct(index);
+          model.selectProduct(model.allProducts[index].productId);
           model.deleteProduct();
         }
       },
@@ -78,14 +78,15 @@ class _ProductListTabState extends State<ProductListTab> {
     return IconButton(
       icon: Icon(Icons.edit),
       onPressed: () {
-        model.selectProduct(index);
         Navigator.of(context).push(
           MaterialPageRoute(
             builder: (BuildContext context) {
-              return ProductEditTab();
+              return ProductEditTab(model.allProducts[index]);
             },
           ),
-        ).then((_) => model.selectProduct(null));
+        )
+            // .then((_) => model.selectProduct(null))
+            ;
       },
     );
   }

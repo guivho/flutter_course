@@ -12,7 +12,7 @@ import '../utils/constants.dart';
 mixin ConnectedProductsModel on Model {
   List<Product> _products = [];
   User _authenticatedUser;
-  int _selectedProductIndex;
+  String _selectedProductId;
   bool _isLoading = false;
 
   void addProduct(FormData formData) {
@@ -80,16 +80,18 @@ mixin ProductsModel on ConnectedProductsModel {
     return _showFavoritesOnly;
   }
 
-  int get selectedProductIndex {
-    return _selectedProductIndex;
-  }
+  // String get selectedProductId {
+  //   return _selectedProductId;
+  // }
 
-  Product get selectedProduct {
-    if (_selectedProductIndex == null) {
-      return null;
-    }
-    return _products[selectedProductIndex];
-  }
+  // Product get selectedProduct {
+  //   if (_selectedProductId == null) {
+  //     return null;
+  //   }
+  //   return _products.firstWhere((Product product) {
+  //     return product.productId == _selectedProductId;
+  //   });
+  // }
 
   List<Product> get allProducts {
     // copy the list and return the copy, not the original
@@ -107,6 +109,19 @@ mixin ProductsModel on ConnectedProductsModel {
     return products;
   }
 
+  Product productWithId(String productId) {
+    final int index = _products.indexWhere((Product product) {
+      return product.productId == productId;
+    });
+    return index >= 0 ? _products[index] : null;
+  }
+
+  int get _selectedProductIndex {
+    return _products.indexWhere((Product product) {
+      return _selectedProductId == product.productId;
+    });
+  }
+
   bool isFavorite(int index) {
     if (index >= 0 && index < _products.length) {
       return _products[index].isFavorite;
@@ -114,30 +129,26 @@ mixin ProductsModel on ConnectedProductsModel {
     return null;
   }
 
-  void toggleFavorite(int index) {
-    if (index >= 0 && index < _products.length) {
-      _products[index] = Product.favoriteToggled(_products[index]);
-      notifyListeners();
-    }
+  void toggleFavorite(String productId) {
+    selectProduct(productId);
+    _products[_selectedProductIndex] =
+        Product.favoriteToggled(_products[_selectedProductIndex]);
+    _selectedProductId = null;
+    notifyListeners();
   }
 
-  void selectProduct(int index) {
-    if (index == null || (index >= 0 && index < _products.length)) {
-      _selectedProductIndex = index;
-      if (index != null) {
-        notifyListeners();
-      }
-    }
+  void selectProduct(String productId) {
+    _selectedProductId = productId;
   }
 
-  void updateProduct(FormData formData) {
+  void updateProduct(String productId, FormData formData) {
     _isLoading = true;
     notifyListeners();
-    final String id = _products[_selectedProductIndex].productId;
-    final Product product = Product.fromForm(id, formData);
+    final Product product = Product.fromForm(productId, formData);
     final Map<String, dynamic> productData = product.toProductData();
     http
-        .put('$DBSERVER$PRODUCTS/$id$JSON', body: json.encode(productData))
+        .put('$DBSERVER$PRODUCTS/$_selectedProductId$JSON',
+            body: json.encode(productData))
         .then((http.Response response) {
       _products[_selectedProductIndex] = product;
       _isLoading = false;
@@ -148,10 +159,11 @@ mixin ProductsModel on ConnectedProductsModel {
   void deleteProduct() {
     _isLoading = true;
     notifyListeners();
-    final String id = _products[_selectedProductIndex].productId;
-    http.delete('$DBSERVER$PRODUCTS/$id$JSON').then((http.Response response) {
-      _products.removeAt(selectedProductIndex);
-      _selectedProductIndex = null;
+    http
+        .delete('$DBSERVER$PRODUCTS/$_selectedProductId$JSON')
+        .then((http.Response response) {
+      _products.removeAt(_selectedProductIndex);
+      _selectedProductId = null;
       _isLoading = false;
       notifyListeners();
     });

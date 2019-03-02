@@ -13,12 +13,12 @@ class ProductCard extends StatelessWidget {
   final int index;
 
   ProductCard({this.product, this.index, this.cardType}) {
-    print('[product_card] Constructor ${product.title}');
+    print('[product_card] Constructor ${product.productId} ${product.title}');
   }
 
   @override
   Widget build(BuildContext context) {
-    print('[product_card] Build ${product.title}');
+    print('[product_card] Build ${product.productId} ${product.title}');
     return _buildProductItem(context);
   }
 
@@ -40,7 +40,12 @@ class ProductCard extends StatelessWidget {
   }
 
   Widget _buildImage(String imageUrl) {
-    return Image.network(imageUrl);
+    return FadeInImage(
+      image: NetworkImage(imageUrl),
+      height: 300.0,
+      fit: BoxFit.cover,
+      placeholder: AssetImage('assets/food.jpg'),
+    );
   }
 
   Container _buildUserEmail() {
@@ -122,7 +127,7 @@ class ProductCard extends StatelessWidget {
           color: Theme.of(context).primaryColor,
           iconSize: 30.0,
           onPressed: () {
-            model.toggleFavorite(index);
+            model.toggleFavorite(product.productId);
           },
         );
       },
@@ -137,7 +142,7 @@ class ProductCard extends StatelessWidget {
       color: Theme.of(context).primaryColor,
       onPressed: () => Navigator.pushNamed<bool>(
             context,
-            '$PRODUCTROUTE/$index',
+            '$PRODUCTROUTE/${product.productId}',
           ),
     );
   }

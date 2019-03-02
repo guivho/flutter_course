@@ -7,6 +7,10 @@ import '../../scoped-models/main_model.dart';
 import '../../utils/constants.dart';
 
 class ProductEditTab extends StatefulWidget {
+  final Product product;
+
+  ProductEditTab(this.product);
+
   @override
   _ProductEditTabState createState() => new _ProductEditTabState();
 }
@@ -19,7 +23,7 @@ class _ProductEditTabState extends State<ProductEditTab> {
   Widget build(BuildContext context) {
     return ScopedModelDescendant<MainModel>(
       builder: (BuildContext context, Widget child, MainModel model) {
-        return model.selectedProductIndex == null
+        return widget.product == null
             ? _buildMainBody(model) //adding
             // editing
             : Scaffold(
@@ -36,7 +40,7 @@ class _ProductEditTabState extends State<ProductEditTab> {
     final double mediaWidth = MediaQuery.of(context).size.width;
     final targetWidth = mediaWidth > 368.0 ? 368.0 : mediaWidth * 0.95;
     final targetPadding = (mediaWidth - targetWidth) / 2;
-    final Product product = model.selectedProduct;
+    // final Product product = model.selectedProduct;
     // if (product != null) _formData.id = product.id;
     return GestureDetector(
       onTap: () {
@@ -51,11 +55,11 @@ class _ProductEditTabState extends State<ProductEditTab> {
           child: ListView(
             padding: EdgeInsets.symmetric(horizontal: targetPadding),
             children: <Widget>[
-              _buildTitleField(product),
-              _buildDescriptionField(product),
-              _buildPriceField(product),
+              _buildTitleField(widget.product),
+              _buildDescriptionField(widget.product),
+              _buildPriceField(widget.product),
               SizedBox(height: 10.0),
-              _buildSubmitButton(model, product),
+              _buildSubmitButton(model, widget.product),
             ],
           ),
         ),
@@ -80,7 +84,7 @@ class _ProductEditTabState extends State<ProductEditTab> {
       if (product == null) {
         model.addProduct(_formData);
       } else {
-        model.updateProduct(_formData);
+        model.updateProduct(product.productId, _formData);
       }
       Navigator.pushReplacementNamed(context, PRODUCTSROUTE)
           .then((_) => model.selectProduct(null));
