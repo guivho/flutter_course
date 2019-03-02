@@ -15,6 +15,40 @@ mixin ConnectedProductsModel on Model {
   User _authenticatedUser;
   bool _isLoading = false;
 
+  bool get isLoading {
+    return _isLoading;
+  }
+
+  // Hack: restarting app looses _authenticatedUser
+  User get authenticatedUser {
+    return _authenticatedUser != null
+        ? _authenticatedUser
+        : User(
+            userId: Uuid().v1(),
+            email: 'unknown',
+            password: 'not relevant',
+          );
+  }
+}
+
+mixin ProductsModel on ConnectedProductsModel {
+  bool _showFavoritesOnly = false;
+  bool get showFavoriteOnly {
+    return _showFavoritesOnly;
+  }
+
+  List<Product> get allProducts {
+    return List.from(_products.values);
+  }
+
+  List<Product> get displayedProducts {
+    final List<Product> products = _showFavoritesOnly
+        ? List.from(_products.values.where((p) => p.isFavorite == true))
+        : List.from(_products.values);
+    print('displayedProducts: $products');
+    return products;
+  }
+
   Future<bool> addProduct(FormData formData) {
     _isLoading = true;
     notifyListeners();
@@ -86,40 +120,6 @@ mixin ConnectedProductsModel on Model {
       notifyListeners();
       return false;
     }
-  }
-
-  bool get isLoading {
-    return _isLoading;
-  }
-
-  // Hack: restarting app looses _authenticatedUser
-  User get authenticatedUser {
-    return _authenticatedUser != null
-        ? _authenticatedUser
-        : User(
-            userId: Uuid().v1(),
-            email: 'unknown',
-            password: 'not relevant',
-          );
-  }
-}
-
-mixin ProductsModel on ConnectedProductsModel {
-  bool _showFavoritesOnly = false;
-  bool get showFavoriteOnly {
-    return _showFavoritesOnly;
-  }
-
-  List<Product> get allProducts {
-    return List.from(_products.values);
-  }
-
-  List<Product> get displayedProducts {
-    final List<Product> products = _showFavoritesOnly
-        ? List.from(_products.values.where((p) => p.isFavorite == true))
-        : List.from(_products.values);
-    print('displayedProducts: $products');
-    return products;
   }
 
   Product productWithId(String productId) {
