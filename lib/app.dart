@@ -69,7 +69,7 @@ class _AppState extends State<App> {
     return {
       ADMINROUTE: (BuildContext context) => ProductsAdminPage(model),
       PRODUCTSROUTE: (BuildContext context) => ProductsPage(model),
-      // AUTHROUTE: (BuildContext context) => AuthPage(),
+      AUTHROUTE: (BuildContext context) => AuthPage(),
     };
   }
 }

@@ -152,48 +152,48 @@ class ProductCard extends StatelessWidget {
     );
   }
 
-  IconButton _buildDeleteButton(BuildContext context) {
-    if (product == null) return null;
-    return IconButton(
-        icon: Icon(Icons.delete),
-        iconSize: 30.0,
-        color: Theme.of(context).primaryColor,
-        onPressed: () {
-          _showWarningDialog(context);
-        });
-  }
+  // IconButton _buildDeleteButton(BuildContext context) {
+  //   if (product == null) return null;
+  //   return IconButton(
+  //       icon: Icon(Icons.delete),
+  //       iconSize: 30.0,
+  //       color: Theme.of(context).primaryColor,
+  //       onPressed: () {
+  //         _showWarningDialog(context);
+  //       });
+  // }
 
-  _showWarningDialog(BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text("Are you sure?"),
-          content: Text('This action can not be undone!'),
-          actions: <Widget>[
-            FlatButton(
-              child: Text('CANCEL'),
-              onPressed: () {
-                Navigator.pop(context); // dismiss the dialog
-              },
-            ),
-            FlatButton(
-              child: Text('DO DELETE'),
-              onPressed: () {
-                model.deleteProduct(product.productId).then((bool ok) {
-                  if (!ok) {
-                    Util.showErrorDialog(context);
-                    Navigator.pop(context); // dismiss the dialog
-                  } else {
-                    Navigator.pop(context); // dismiss the dialog
-                    Navigator.pop(context, true); // go back to list
-                  }
-                });
-              },
-            ),
-          ],
-        );
-      },
-    );
-  }
+//   _showWarningDialog(BuildContext context) {
+//     showDialog(
+//       context: context,
+//       builder: (BuildContext context) {
+//         return AlertDialog(
+//           title: Text("Are you sure?"),
+//           content: Text('This action can not be undone!'),
+//           actions: <Widget>[
+//             FlatButton(
+//               child: Text('CANCEL'),
+//               onPressed: () {
+//                 Navigator.pop(context); // dismiss the dialog
+//               },
+//             ),
+//             FlatButton(
+//               child: Text('DO DELETE'),
+//               onPressed: () {
+//                 model.deleteProduct(product.productId).then((bool ok) {
+//                   if (!ok) {
+//                     Util.showErrorDialog(context);
+//                     Navigator.pop(context); // dismiss the dialog
+//                   } else {
+//                     Navigator.pop(context); // dismiss the dialog
+//                     Navigator.pop(context, true); // go back to list
+//                   }
+//                 });
+//               },
+//             ),
+//           ],
+//         );
+//       },
+//     );
+//   }
 }

@@ -18,4 +18,9 @@ class Validators {
     if (RegExp(re).hasMatch(input)) return null;
     return "Invalid email address";
   }
+
+  static String confirmPassword(String input, String password) {
+    if (input == password) return null;
+    return 'Passwords do not match!';
+  }
 }

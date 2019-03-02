@@ -6,6 +6,11 @@ import '../scoped-models/main_model.dart';
 import '../utils/constants.dart';
 import '../utils/validators.dart';
 
+enum AuthMode {
+  Signup,
+  Login,
+}
+
 class AuthPage extends StatefulWidget {
   @override
   _AuthPageState createState() => new _AuthPageState();
@@ -15,6 +20,8 @@ class _AuthPageState extends State<AuthPage> {
   final LoginData _loginData = LoginData();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final String _warningText = 'Required!';
+  final TextEditingController _passwordTextController = TextEditingController();
+  AuthMode _authMode = AuthMode.Login;
 
   _buildBackgroundImage() {
     return BoxDecoration(
@@ -61,15 +68,31 @@ class _AuthPageState extends State<AuthPage> {
           SizedBox(height: 10.0),
           _buildPasswordField(),
           SizedBox(height: 10.0),
+          _buildPasswordConfirmField(),
+          SizedBox(height: 10.0),
           _buildAcceptTerms(),
           SizedBox(height: 10.0),
           _buildLoginButton(),
           SizedBox(height: 10.0),
+          _buildSwitchModeButton(),
           // _buildHomeCookedButton(),
           // Text('$EMAIL: $_email'),
           // Text('$PASSWORD: $_password'),
         ],
       ),
+    );
+  }
+
+  Widget _buildSwitchModeButton() {
+    return FlatButton(
+      child: Text(
+          'Switch to ${_authMode == AuthMode.Login ? 'signup' : 'login'} mode'),
+      onPressed: () {
+        setState(() {
+          _authMode =
+              _authMode == AuthMode.Login ? AuthMode.Signup : AuthMode.Login;
+        });
+      },
     );
   }
 
@@ -119,6 +142,22 @@ class _AuthPageState extends State<AuthPage> {
     );
   }
 
+  Widget _buildPasswordConfirmField() {
+    if (_authMode == AuthMode.Login) return Container();
+    return TextFormField(
+      decoration: InputDecoration(
+        labelText: '$CONFIRMPASSWORD',
+        filled: true,
+        fillColor: Colors.white,
+      ),
+      obscureText: true,
+      validator: (input) {
+        return Validators.confirmPassword(input, _passwordTextController.text);
+      },
+      onSaved: (String value) {},
+    );
+  }
+
   TextFormField _buildPasswordField() {
     return TextFormField(
       decoration: InputDecoration(
@@ -127,13 +166,8 @@ class _AuthPageState extends State<AuthPage> {
         fillColor: Colors.white,
       ),
       obscureText: true,
+      controller: _passwordTextController,
       validator: Validators.password,
-      //  (String input) {
-      //   String errors = Validators.password(input);
-      //   if (errors.length > 0) {
-      //     return errors;
-      //   }
-      // },
       onSaved: (String value) {
         _loginData.password = value;
       },
@@ -144,7 +178,7 @@ class _AuthPageState extends State<AuthPage> {
     return ScopedModelDescendant<MainModel>(
       builder: (BuildContext context, Widget child, MainModel model) {
         return RaisedButton(
-          child: Text('Login'),
+          child: Text('${_authMode == AuthMode.Login ? 'Login' : 'Signup'}'),
           onPressed: () => _submitForm(model.login),
         );
       },
