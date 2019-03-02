@@ -87,7 +87,8 @@ class _ProductEditTabState extends State<ProductEditTab> {
         model.updateProduct(product.productId, _formData);
       }
       Navigator.pushReplacementNamed(context, PRODUCTSROUTE)
-          .then((_) => model.selectProduct(null));
+          // .then((_) => model.selectProduct(null))
+          ;
     }
   }
 

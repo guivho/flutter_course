@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:scoped_model/scoped_model.dart';
 
 import './product_edit_tab.dart';
+import '../../models/product.dart';
 import '../../scoped-models/main_model.dart';
 import '../../widgets/ui_elements/no_products.dart';
 import '../../widgets/ui_elements/spinner.dart';
@@ -32,7 +33,7 @@ class _ProductListTabState extends State<ProductListTab> {
                 : ListView.builder(
                     itemCount: model.allProducts.length,
                     itemBuilder: (BuildContext context, int index) {
-                      return _buildDismissible(model, index);
+                      return _buildDismissible(model, model.allProducts[index]);
                     },
                   );
         return RefreshIndicator(
@@ -43,45 +44,45 @@ class _ProductListTabState extends State<ProductListTab> {
     );
   }
 
-  Widget _buildDismissible(MainModel model, int index) {
+  Widget _buildDismissible(MainModel model, Product product) {
     return Dismissible(
-      key: Key(model.displayedProducts[index].productId),
+      key: Key(product.productId),
       background: Container(color: Colors.red),
       onDismissed: (DismissDirection direction) {
         if (direction == DismissDirection.endToStart) {
-          model.selectProduct(model.allProducts[index].productId);
-          model.deleteProduct();
+          // model.selectProduct(product.productId);
+          model.deleteProduct(product.productId);
         }
       },
-      child: _buildPoductTile(model, index),
+      child: _buildPoductTile(model, product),
     );
   }
 
-  Widget _buildPoductTile(MainModel model, int index) {
+  Widget _buildPoductTile(MainModel model, Product product) {
     return Column(
       children: <Widget>[
         ListTile(
           leading: CircleAvatar(
-            backgroundImage:
-                NetworkImage(model.displayedProducts[index].imageUrl),
+            backgroundImage: NetworkImage(product.imageUrl),
           ),
-          title: Text(model.displayedProducts[index].title),
-          subtitle: Text('€${model.displayedProducts[index].price.toString()}'),
-          trailing: _buildEditButton(context, index, model),
+          title: Text(product.title),
+          subtitle: Text('€${product.price.toString()}'),
+          trailing: _buildEditButton(context, product, model),
         ),
         Divider(),
       ],
     );
   }
 
-  Widget _buildEditButton(BuildContext context, int index, MainModel model) {
+  Widget _buildEditButton(
+      BuildContext context, Product product, MainModel model) {
     return IconButton(
       icon: Icon(Icons.edit),
       onPressed: () {
         Navigator.of(context).push(
           MaterialPageRoute(
             builder: (BuildContext context) {
-              return ProductEditTab(model.allProducts[index]);
+              return ProductEditTab(product);
             },
           ),
         )

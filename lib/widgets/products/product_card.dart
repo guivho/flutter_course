@@ -10,9 +10,10 @@ import '../../utils/constants.dart';
 class ProductCard extends StatelessWidget {
   final CardType cardType;
   final Product product;
-  final int index;
+  final MainModel model;
+  // final int index;
 
-  ProductCard({this.product, this.index, this.cardType}) {
+  ProductCard({this.product, this.cardType, this.model}) {
     print('[product_card] Constructor ${product.productId} ${product.title}');
   }
 
@@ -118,7 +119,7 @@ class ProductCard extends StatelessWidget {
   }
 
   Widget _buildFavoriteButton(BuildContext context) {
-    if (index == null) return null;
+    if (product == null) return null;
     return ScopedModelDescendant(
       builder: (BuildContext context, Widget child, MainModel model) {
         return IconButton(
@@ -135,7 +136,7 @@ class ProductCard extends StatelessWidget {
   }
 
   IconButton _buildInfoButton(BuildContext context) {
-    if (index == null) return null;
+    if (product == null) return null;
     return IconButton(
       icon: Icon(Icons.info),
       iconSize: 30.0,
@@ -148,13 +149,14 @@ class ProductCard extends StatelessWidget {
   }
 
   IconButton _buildDeleteButton(BuildContext context) {
-    if (index == null) return null;
+    if (product == null) return null;
     return IconButton(
-      icon: Icon(Icons.delete),
-      iconSize: 30.0,
-      color: Theme.of(context).primaryColor,
-      onPressed: () => _showWarningDialog(context),
-    );
+        icon: Icon(Icons.delete),
+        iconSize: 30.0,
+        color: Theme.of(context).primaryColor,
+        onPressed: () {
+          _showWarningDialog(context);
+        });
   }
 
   _showWarningDialog(BuildContext context) {
@@ -174,6 +176,7 @@ class ProductCard extends StatelessWidget {
             FlatButton(
               child: Text('DO DELETE'),
               onPressed: () {
+                model.deleteProduct(product.productId);
                 Navigator.pop(context); // dismiss the dialog
                 Navigator.pop(context, true); // go back to delete
               },

@@ -21,7 +21,7 @@ class ProductListWidget extends StatelessWidget {
           ? Spinner()
           : model.displayedProducts.length <= 0
               ? NoProducts()
-              : _buildProductList(model.displayedProducts);
+              : _buildProductList(model.displayedProducts, model);
       return RefreshIndicator(
         child: content,
         onRefresh: model.fetchProducts, // Must return a future
@@ -29,13 +29,13 @@ class ProductListWidget extends StatelessWidget {
     });
   }
 
-  Widget _buildProductList(List<Product> products) {
+  Widget _buildProductList(List<Product> products, MainModel model) {
     return ListView.builder(
       itemCount: products.length,
-      itemBuilder: (BuildContext context, int productIndex) => ProductCard(
-            product: products[productIndex],
-            index: productIndex,
+      itemBuilder: (BuildContext context, int index) => ProductCard(
+            product: products[index],
             cardType: CardType.list,
+            model: model,
           ),
     );
   }
