@@ -93,7 +93,8 @@ class ProductCard extends StatelessWidget {
   ButtonBar _buildButtonBar(BuildContext context) {
     Widget _infoOrDeleteButton = cardType == CardType.list
         ? _buildInfoButton(context)
-        : _buildDeleteButton(context);
+        : //_buildDeleteButton(context); // does not work
+        Container();
     return ButtonBar(
       alignment: MainAxisAlignment.center,
       children: <Widget>[

@@ -79,7 +79,7 @@ class _ProductEditTabState extends State<ProductEditTab> {
     // alternative to autovalidate
     if (_formKey.currentState.validate()) {
       _formKey.currentState.save();
-      bool succes;
+      bool succes = true;
       if (product == null) {
         model.addProduct(_formData).then((bool ok) {
           succes = ok;

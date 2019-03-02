@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 
 import 'package:http/http.dart' as http;
@@ -19,19 +20,31 @@ mixin ConnectedProductsModel on Model {
     notifyListeners();
     final Map<String, dynamic> productData = formData.toProductData(
         authenticatedUser.email, authenticatedUser.userId);
+    print('productData: $productData');
     return http
         .post(PRODUCTSURL, body: json.encode(productData))
         .then((http.Response response) {
-      if (response.statusCode != 200 && response.statusCode != 201) {
+      final bool ok = response.statusCode == 200 || response.statusCode == 201;
+      if (ok) {
+        print('response.body: ${response.body}');
+        final Map<String, dynamic> jsonData = json.decode(response.body);
+        print('jsonData: $jsonData');
+        final Product newProduct =
+            Product.fromJson(jsonData[NAME], productData);
+        print('newProduct: $newProduct');
+        _products[newProduct.productId] = newProduct;
+        print('_products: $_products');
+      } else {
         print('(addProduct) statusCode: ${response.statusCode}');
-        return false;
       }
-      final Map<String, dynamic> jsonData = json.decode(response.body);
-      final Product newProduct = Product.fromJson(jsonData[NAME], productData);
-      _products[newProduct.productId] = newProduct;
       _isLoading = false;
       notifyListeners();
-      return true;
+      return ok;
+    }).catchError((error) {
+      print('(addProduct) catchError: $error');
+      _isLoading = false;
+      notifyListeners();
+      return false;
     });
   }
 
@@ -43,11 +56,14 @@ mixin ConnectedProductsModel on Model {
   }
 
   // Future only returned to be able to use RefreshIndicator
-  Future<bool> fetchProducts() {
+  // (Note this onw using aync and await rather than .then
+  // both are equivalent)
+  Future<bool> fetchProducts() async {
     _isLoading = true;
     notifyListeners();
     print('[model] fetchProducts');
-    return http.get(PRODUCTSURL).then((http.Response response) {
+    try {
+      final http.Response response = await http.get(PRODUCTSURL);
       if (response.statusCode != 200 && response.statusCode != 201) {
         print('(fetchProducts) statusCode: ${response.statusCode}');
         _isLoading = false;
@@ -64,12 +80,12 @@ mixin ConnectedProductsModel on Model {
       _isLoading = false;
       notifyListeners();
       return true;
-    }).catchError((error) {
-      print('(fetchProducts) catchError: $error');
+    } catch (error) {
+      print('(fetchProducts) catch error: $error');
       _isLoading = false;
       notifyListeners();
       return false;
-    });
+    }
   }
 
   bool get isLoading {
