@@ -13,8 +13,20 @@ const String PRODUCTSROUTE = '/$PRODUCTS';
 
 const String PRODUCTSURL = '$DBSERVER$PRODUCTS$JSON';
 
-const String EMAIL = 'Email';
-const String PASSWORD = 'Password';
+const String EMAILPROMPT = 'Email:';
+const String PASSWORDPROMPT = 'password:';
+
+// for firebase api
+const String FB_APIKEY = 'AIzaSyAp6DJzAFqy6zaKhThrFeT4dhnzUsm0-Fo';
+const String FB_EMAIL = 'email';
+const String FB_IDTOKEN = 'idToken';
+const String FB_LOCALID = 'localId';
+const String FB_REFRESCTOKEN = 'refreshToken';
+const String FB_PASSWORD = 'password';
+const String FB_RETURNSECURETOKEN = 'returnSecureToken';
+const String FB_SIGNUP =
+    'https://www.googleapis.com/identitytoolkit/v3/relyingparty/signupNewUser?key=';
+const String FB_SUCCESS = 'success';
 
 enum DrawerType {
   fromListToAdmin,

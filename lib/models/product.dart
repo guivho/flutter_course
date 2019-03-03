@@ -47,8 +47,8 @@ class Product {
         userId = formData.userId;
 
   Product.fromJson(String productId, dynamic productData)
-      // the productData is really a Map<String, dynamic>
-      : productId = productId,
+      : // the productData is really a Map<String, dynamic>
+        productId = productId,
         title = productData['title'],
         description = productData['description'],
         price = productData['price'],

@@ -72,7 +72,7 @@ class _AuthPageState extends State<AuthPage> {
           SizedBox(height: 10.0),
           _buildAcceptTerms(),
           SizedBox(height: 10.0),
-          _buildLoginButton(),
+          _buildSubmitButton(),
           SizedBox(height: 10.0),
           _buildSwitchModeButton(),
           // _buildHomeCookedButton(),
@@ -130,7 +130,7 @@ class _AuthPageState extends State<AuthPage> {
   TextFormField _buildEmailField() {
     return TextFormField(
       decoration: InputDecoration(
-        labelText: '$EMAIL:',
+        labelText: '$EMAILPROMPT',
         filled: true,
         fillColor: Colors.white,
       ),
@@ -154,14 +154,13 @@ class _AuthPageState extends State<AuthPage> {
       validator: (input) {
         return Validators.confirmPassword(input, _passwordTextController.text);
       },
-      onSaved: (String value) {},
     );
   }
 
   TextFormField _buildPasswordField() {
     return TextFormField(
       decoration: InputDecoration(
-        labelText: '$PASSWORD:',
+        labelText: '$PASSWORDPROMPT',
         filled: true,
         fillColor: Colors.white,
       ),
@@ -174,12 +173,12 @@ class _AuthPageState extends State<AuthPage> {
     );
   }
 
-  Widget _buildLoginButton() {
+  Widget _buildSubmitButton() {
     return ScopedModelDescendant<MainModel>(
       builder: (BuildContext context, Widget child, MainModel model) {
         return RaisedButton(
           child: Text('${_authMode == AuthMode.Login ? 'Login' : 'Signup'}'),
-          onPressed: () => _submitForm(model.login),
+          onPressed: () => _submitForm(model.login, model.signup),
         );
       },
     );
@@ -196,19 +195,24 @@ class _AuthPageState extends State<AuthPage> {
   //   );
   // }
 
-  void _submitForm(Function login) {
+  void _submitForm(Function login, Function signUp) async {
     if (_formKey.currentState.validate()) {
       _formKey.currentState.save();
       setState(() {
         _loginData.warning = _loginData.acceptTerms ? '' : _warningText;
       });
-      // print(_loginData.email);
-      // print(_loginData.password);
-      // print(_loginData.acceptTerms);
       if (_loginData.acceptTerms) {
-        print('[auth_page] pushing PRODUCTSROUTE');
-        login(_loginData.email, _loginData.password);
-        Navigator.pushReplacementNamed(context, PRODUCTSROUTE);
+        if (_authMode == AuthMode.Login) {
+          login(_loginData.email, _loginData.password);
+          print('[auth_page] pushing PRODUCTSROUTE');
+          Navigator.pushReplacementNamed(context, PRODUCTSROUTE);
+        } else {
+          final Map<String, dynamic> successInformation =
+              await signUp(_loginData.email, _loginData.password);
+          if (successInformation[FB_SUCCESS]) {
+            Navigator.pushReplacementNamed(context, PRODUCTSROUTE);
+          }
+        }
       }
     }
   }

@@ -5,6 +5,7 @@ import 'package:http/http.dart' as http;
 import 'package:scoped_model/scoped_model.dart';
 import 'package:uuid/uuid.dart';
 
+import '../models/fb_auth_data.dart';
 import '../models/form_data.dart';
 import '../models/product.dart';
 import '../models/user.dart';
@@ -197,5 +198,25 @@ mixin UsersModel on ConnectedProductsModel {
       email: email,
       password: password,
     );
+  }
+
+  Future<Map<String, dynamic>> signup(String email, String password) async {
+    final FbAuthData fbAuthData = FbAuthData(email: email, password: password);
+    print('fbAuthData: $fbAuthData');
+    final authData = fbAuthData.toMapStringDynamic();
+    print('authData: $authData');
+    final String url = '$FB_SIGNUP$FB_APIKEY';
+    print('url=$url');
+    final http.Response response =
+        await http.post(url, body: json.encode(authData));
+    print('response.stausCode: ${response.statusCode}');
+    if (response.statusCode == 200) {
+      final dynamic userData = json.decode(response.body);
+      print('response.body: ${response.body}');
+      final User newUser = User.fromJson(userData, password);
+      print('newUser: $newUser');
+      return {FB_SUCCESS: true};
+    }
+    return {FB_SUCCESS: false};
   }
 }
