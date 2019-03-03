@@ -201,6 +201,8 @@ mixin UsersModel on ConnectedProductsModel {
   }
 
   Future<Map<String, dynamic>> signup(String email, String password) async {
+    _isLoading = true;
+    notifyListeners();
     final FbAuthData fbAuthData = FbAuthData(email: email, password: password);
     print('fbAuthData: $fbAuthData');
     final authData = fbAuthData.toMapStringDynamic();
@@ -210,13 +212,24 @@ mixin UsersModel on ConnectedProductsModel {
     final http.Response response =
         await http.post(url, body: json.encode(authData));
     print('response.stausCode: ${response.statusCode}');
-    if (response.statusCode == 200) {
+    bool isOk = true;
+    String message = 'Authentication succeeded!';
+    final Map<String, dynamic> responseData = json.decode(response.body);
+    if (response.statusCode == 200 && responseData.containsKey(FB_IDTOKEN)) {
       final dynamic userData = json.decode(response.body);
       print('response.body: ${response.body}');
       final User newUser = User.fromJson(userData, password);
       print('newUser: $newUser');
-      return {FB_SUCCESS: true};
+    } else {
+      isOk = false;
+      if (responseData['error']['message'] == 'EMAIL_EXISTS') {
+        message = 'Email already exists!';
+      } else {
+        message = 'Something went wrong!';
+      }
     }
-    return {FB_SUCCESS: false};
+    _isLoading = false;
+    notifyListeners();
+    return {FB_SUCCESS: isOk, 'message': message};
   }
 }

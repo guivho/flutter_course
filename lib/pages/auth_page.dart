@@ -4,6 +4,7 @@ import 'package:scoped_model/scoped_model.dart';
 import '../models/login_data.dart';
 import '../scoped-models/main_model.dart';
 import '../utils/constants.dart';
+import '../widgets/ui_elements/spinner.dart';
 import '../utils/validators.dart';
 
 enum AuthMode {
@@ -176,10 +177,13 @@ class _AuthPageState extends State<AuthPage> {
   Widget _buildSubmitButton() {
     return ScopedModelDescendant<MainModel>(
       builder: (BuildContext context, Widget child, MainModel model) {
-        return RaisedButton(
-          child: Text('${_authMode == AuthMode.Login ? 'Login' : 'Signup'}'),
-          onPressed: () => _submitForm(model.login, model.signup),
-        );
+        return model.isLoading
+            ? Spinner()
+            : RaisedButton(
+                child:
+                    Text('${_authMode == AuthMode.Login ? 'Login' : 'Signup'}'),
+                onPressed: () => _submitForm(model.login, model.signup),
+              );
       },
     );
   }
@@ -211,6 +215,22 @@ class _AuthPageState extends State<AuthPage> {
               await signUp(_loginData.email, _loginData.password);
           if (successInformation[FB_SUCCESS]) {
             Navigator.pushReplacementNamed(context, PRODUCTSROUTE);
+          } else {
+            showDialog(
+                context: context,
+                builder: (BuildContext context) {
+                  return AlertDialog(
+                    title: Text('An error occurred.'),
+                    content: Text(successInformation['message']),
+                    actions: <Widget>[
+                      FlatButton(
+                          child: Text('Okay'),
+                          onPressed: () {
+                            Navigator.of(context).pop();
+                          })
+                    ],
+                  );
+                });
           }
         }
       }
