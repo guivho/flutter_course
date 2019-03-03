@@ -192,37 +192,28 @@ mixin ProductsModel on ConnectedProductsModel {
 }
 
 mixin UsersModel on ConnectedProductsModel {
-  void login(String email, String password) {
-    _authenticatedUser = User(
-      userId: Uuid().v1(),
-      email: email,
-      password: password,
-    );
-  }
-
-  Future<Map<String, dynamic>> signup(String email, String password) async {
+  Future<Map<String, dynamic>> authenticate(
+      AuthMode authMode, String email, String password) async {
     _isLoading = true;
     notifyListeners();
-    final FbAuthData fbAuthData = FbAuthData(email: email, password: password);
-    print('fbAuthData: $fbAuthData');
-    final authData = fbAuthData.toMapStringDynamic();
-    print('authData: $authData');
-    final String url = '$FB_SIGNUP$FB_APIKEY';
-    print('url=$url');
+    final Map<String, dynamic> authData =
+        FbAuthData(email, password).toMapStringDynamic();
+    final String url =
+        '${authMode == AuthMode.Login ? FB_LOGIN : FB_SIGNUP}$FB_APIKEY';
     final http.Response response =
         await http.post(url, body: json.encode(authData));
-    print('response.stausCode: ${response.statusCode}');
     bool isOk = true;
     String message = 'Authentication succeeded!';
     final Map<String, dynamic> responseData = json.decode(response.body);
     if (response.statusCode == 200 && responseData.containsKey(FB_IDTOKEN)) {
       final dynamic userData = json.decode(response.body);
-      print('response.body: ${response.body}');
-      final User newUser = User.fromJson(userData, password);
-      print('newUser: $newUser');
     } else {
       isOk = false;
-      if (responseData['error']['message'] == 'EMAIL_EXISTS') {
+      if (responseData['error']['message'] == 'EMAIL_NOT_FOUND') {
+        message = 'Email not found!';
+      } else if (responseData['error']['message'] == 'INVALID_PASSWORD') {
+        message = 'Invalid password!';
+      } else if (responseData['error']['message'] == 'EMAIL_EXISTS') {
         message = 'Email already exists!';
       } else {
         message = 'Something went wrong!';

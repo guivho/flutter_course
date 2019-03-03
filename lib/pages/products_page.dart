@@ -21,7 +21,7 @@ class _ProductsPageState extends State<ProductsPage> {
   @override
   void initState() {
     widget.model.fetchProducts().then((bool ok) {
-      if (!ok) Util.showErrorDialog(context);
+      if (!ok) Util.showTryAgainDialog(context);
     });
     super.initState();
   }

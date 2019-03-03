@@ -26,6 +26,8 @@ const String FB_PASSWORD = 'password';
 const String FB_RETURNSECURETOKEN = 'returnSecureToken';
 const String FB_SIGNUP =
     'https://www.googleapis.com/identitytoolkit/v3/relyingparty/signupNewUser?key=';
+const String FB_LOGIN =
+    'https://www.googleapis.com/identitytoolkit/v3/relyingparty/verifyPassword?key=';
 const String FB_SUCCESS = 'success';
 
 enum DrawerType {
@@ -36,4 +38,9 @@ enum DrawerType {
 enum CardType {
   list,
   info,
+}
+
+enum AuthMode {
+  Signup,
+  Login,
 }

@@ -1,4 +1,3 @@
-import 'package:flutter/material.dart';
 import '../utils/constants.dart';
 
 class FbAuthData {
@@ -6,10 +5,7 @@ class FbAuthData {
   final String password;
   final bool returnSecureToken = true;
 
-  FbAuthData({
-    @required this.email,
-    @required this.password,
-  });
+  FbAuthData(this.email, this.password);
 
   Map<String, dynamic> toMapStringDynamic() {
     return {

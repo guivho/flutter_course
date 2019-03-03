@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 
 class Util {
-  static void showErrorDialog(BuildContext context) {
+  static void showErrorDialog(BuildContext context, String message) {
     showDialog(
         context: context,
         builder: (BuildContext context) {
           return AlertDialog(
             title: Text('Something went wrong'),
-            content: Text('Please try again!'),
+            content: Text(message),
             actions: <Widget>[
               FlatButton(
                 child: Text('Okay'),
@@ -16,5 +16,9 @@ class Util {
             ],
           );
         });
+  }
+
+  static void showTryAgainDialog(BuildContext context) {
+    showErrorDialog(context, 'Please try again!');
   }
 }

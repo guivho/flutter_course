@@ -20,7 +20,7 @@ class _ProductListTabState extends State<ProductListTab> {
   @override
   void initState() {
     widget.model.fetchProducts().then((bool ok) {
-      if (!ok) Util.showErrorDialog(context);
+      if (!ok) Util.showTryAgainDialog(context);
     });
     super.initState();
   }
@@ -54,7 +54,7 @@ class _ProductListTabState extends State<ProductListTab> {
       onDismissed: (DismissDirection direction) {
         if (direction == DismissDirection.endToStart) {
           model.deleteProduct(product.productId).then((bool ok) {
-            if (!ok) Util.showErrorDialog(context);
+            if (!ok) Util.showTryAgainDialog(context);
           });
         }
       },

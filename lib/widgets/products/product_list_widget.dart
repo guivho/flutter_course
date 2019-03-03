@@ -26,7 +26,7 @@ class ProductListWidget extends StatelessWidget {
       return RefreshIndicator(
           child: content,
           onRefresh: () => model.fetchProducts().then((bool ok) {
-                if (!ok) Util.showErrorDialog(context);
+                if (!ok) Util.showTryAgainDialog(context);
               }));
     });
   }

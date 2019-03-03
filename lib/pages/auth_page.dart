@@ -5,12 +5,8 @@ import '../models/login_data.dart';
 import '../scoped-models/main_model.dart';
 import '../utils/constants.dart';
 import '../widgets/ui_elements/spinner.dart';
+import '../utils/util.dart';
 import '../utils/validators.dart';
-
-enum AuthMode {
-  Signup,
-  Login,
-}
 
 class AuthPage extends StatefulWidget {
   @override
@@ -182,7 +178,7 @@ class _AuthPageState extends State<AuthPage> {
             : RaisedButton(
                 child:
                     Text('${_authMode == AuthMode.Login ? 'Login' : 'Signup'}'),
-                onPressed: () => _submitForm(model.login, model.signup),
+                onPressed: () => _submitForm(model.authenticate),
               );
       },
     );
@@ -199,39 +195,19 @@ class _AuthPageState extends State<AuthPage> {
   //   );
   // }
 
-  void _submitForm(Function login, Function signUp) async {
+  void _submitForm(Function authenticate) async {
     if (_formKey.currentState.validate()) {
       _formKey.currentState.save();
       setState(() {
         _loginData.warning = _loginData.acceptTerms ? '' : _warningText;
       });
       if (_loginData.acceptTerms) {
-        if (_authMode == AuthMode.Login) {
-          login(_loginData.email, _loginData.password);
-          print('[auth_page] pushing PRODUCTSROUTE');
+        final Map<String, dynamic> successInformation = await authenticate(
+            _authMode, _loginData.email, _loginData.password);
+        if (successInformation[FB_SUCCESS]) {
           Navigator.pushReplacementNamed(context, PRODUCTSROUTE);
         } else {
-          final Map<String, dynamic> successInformation =
-              await signUp(_loginData.email, _loginData.password);
-          if (successInformation[FB_SUCCESS]) {
-            Navigator.pushReplacementNamed(context, PRODUCTSROUTE);
-          } else {
-            showDialog(
-                context: context,
-                builder: (BuildContext context) {
-                  return AlertDialog(
-                    title: Text('An error occurred.'),
-                    content: Text(successInformation['message']),
-                    actions: <Widget>[
-                      FlatButton(
-                          child: Text('Okay'),
-                          onPressed: () {
-                            Navigator.of(context).pop();
-                          })
-                    ],
-                  );
-                });
-          }
+          Util.showErrorDialog(context, successInformation['message']);
         }
       }
     }

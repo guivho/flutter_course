@@ -131,7 +131,7 @@ class ProductCard extends StatelessWidget {
           iconSize: 30.0,
           onPressed: () {
             model.toggleFavorite(product.productId).then((bool ok) {
-              if (!ok) Util.showErrorDialog(context);
+              if (!ok) Util.showTryAgainDialog(context);
             });
           },
         );

@@ -92,7 +92,7 @@ class _ProductEditTabState extends State<ProductEditTab> {
       if (succes) {
         Navigator.pushReplacementNamed(context, PRODUCTSROUTE);
       } else {
-        Util.showErrorDialog(context);
+        Util.showTryAgainDialog(context);
       }
     }
   }
