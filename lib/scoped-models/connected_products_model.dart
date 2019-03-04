@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 
 import 'package:http/http.dart' as http;
+import 'package:rxdart/subjects.dart';
 import 'package:scoped_model/scoped_model.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -187,7 +188,18 @@ mixin ProductsModel on ConnectedProductsModel {
   }
 }
 
-mixin UsersModel on ConnectedProductsModel {
+mixin UserModel on ConnectedProductsModel {
+  Timer _authTimer;
+  PublishSubject<bool> _userSubject = PublishSubject();
+
+  User get user {
+    return _authenticatedUser;
+  }
+
+  PublishSubject<bool> get userSubject {
+    return _userSubject;
+  }
+
   Future<Map<String, dynamic>> authenticate(
       AuthMode authMode, String email, String password) async {
     _isLoading = true;
@@ -205,10 +217,16 @@ mixin UsersModel on ConnectedProductsModel {
     if (response.statusCode == 200 && responseData.containsKey(FB_IDTOKEN)) {
       final dynamic userData = json.decode(response.body);
       _authenticatedUser = User.fromJson(userData);
+      final int seconds = int.parse(userData[FB_EXPIRESIN]);
+      _userSubject.add(true);
+      setAuthTimeout(seconds);
+      final DateTime now = DateTime.now();
+      final DateTime expiryTime = now.add(Duration(seconds: seconds));
       final SharedPreferences prefs = await SharedPreferences.getInstance();
       prefs.setString(FB_IDTOKEN, userData[FB_IDTOKEN]);
       prefs.setString(FB_EMAIL, userData[FB_EMAIL]);
       prefs.setString(FB_LOCALID, userData[FB_LOCALID]);
+      prefs.setString(FB_EXPIRYTIME, expiryTime.toIso8601String());
       print('_authenticated_user: $_authenticatedUser');
     } else {
       isOk = false;
@@ -233,25 +251,40 @@ mixin UsersModel on ConnectedProductsModel {
     bool ok = false;
     _authenticatedUser = null;
     if (token != null) {
+      final DateTime expiryTime =
+          DateTime.parse(_prefs.getString(FB_EXPIRYTIME));
+      final DateTime now = DateTime.now();
+      final int seconds = expiryTime.difference(now).inSeconds;
+      if (seconds <= 0) {
+        notifyListeners();
+        return false;
+      }
+      setAuthTimeout(seconds);
       final email = _prefs.getString(FB_EMAIL);
       final userId = _prefs.getString(FB_LOCALID);
       _authenticatedUser = User(email: email, token: token, userId: userId);
+      _userSubject.add(true);
       ok = true;
     }
     notifyListeners();
     return ok;
   }
 
-  User get user {
-    return _authenticatedUser;
-  }
-
   void logout() async {
+    print('logout');
     _authenticatedUser = null;
+    _authTimer.cancel();
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     prefs.remove(FB_IDTOKEN);
     prefs.remove(FB_EMAIL);
     prefs.remove(FB_LOCALID);
-    notifyListeners();
+    prefs.remove(FB_EXPIRYTIME);
+  }
+
+  void setAuthTimeout(int seconds) {
+    _authTimer = Timer(Duration(seconds: seconds), () {
+      logout();
+      _userSubject.add(false);
+    });
   }
 }

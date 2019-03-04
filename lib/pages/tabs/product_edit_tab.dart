@@ -90,7 +90,7 @@ class _ProductEditTabState extends State<ProductEditTab> {
         });
       }
       if (succes) {
-        Navigator.pushReplacementNamed(context, PRODUCTSROUTE);
+        Navigator.pushReplacementNamed(context, AUTHROUTE);
       } else {
         Util.showTryAgainDialog(context);
       }

@@ -206,7 +206,7 @@ class _AuthPageState extends State<AuthPage> {
         final Map<String, dynamic> successInformation = await authenticate(
             _authMode, _loginData.email, _loginData.password);
         if (successInformation[FB_SUCCESS]) {
-          Navigator.pushReplacementNamed(context, PRODUCTSROUTE);
+          // Navigator.pushReplacementNamed(context, AUTHROUTE);
         } else {
           Util.showErrorDialog(context, successInformation['message']);
         }

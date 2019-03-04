@@ -16,10 +16,16 @@ class App extends StatefulWidget {
 
 class _AppState extends State<App> {
   final MainModel _model = MainModel();
+  bool _isAuthenticated = false;
 
   @override
   void initState() {
     _model.autoAuthenticate();
+    _model.userSubject.listen((bool isAuthenticated) {
+      setState(() {
+        _isAuthenticated = isAuthenticated;
+      });
+    });
     super.initState();
   }
 
@@ -52,20 +58,26 @@ class _AppState extends State<App> {
       onUnknownRoute: (RouteSettings settings) {
         print('CAVE: unknown route ${settings.name}');
         return MaterialPageRoute(
-            builder: (BuildContext context) => ProductsPage(model));
+            builder: (BuildContext context) =>
+                !_isAuthenticated ? AuthPage() : ProductsPage(model));
       },
     );
   }
 
   Route<dynamic> defineOnGenerateRoute(
       BuildContext context, RouteSettings settings, MainModel model) {
+    if (!_isAuthenticated) {
+      return MaterialPageRoute<bool>(
+          builder: (BuildContext context) => AuthPage());
+    }
     final List<String> pathElements = settings.name.split('/');
     // valid paths must start with '/'
     if (pathElements[0] == '' && pathElements[1] == PRODUCT) {
       final String productId = pathElements[2];
       // model.selectProduct(productId);
       return MaterialPageRoute<bool>(
-        builder: (BuildContext context) => ProductPage(productId),
+        builder: (BuildContext context) =>
+            !_isAuthenticated ? AuthPage() : ProductPage(productId),
       );
     }
     return null;
@@ -74,16 +86,17 @@ class _AppState extends State<App> {
   Map<String, WidgetBuilder> defineRoutes(
       BuildContext context, MainModel model) {
     return {
-      AUTHROUTE: (BuildContext context) => ScopedModelDescendant(
-            builder: (BuildContext context, _, MainModel model) {
-              return model.user == null ? AuthPage() : ProductsPage(model);
-            },
-          ),
-      // Somehow this does not work:
-      // AUTHROUTE: (BuildContext context) =>
-      //     _model.user == null ? AuthPage() : ProductsPage(model),
-      ADMINROUTE: (BuildContext context) => ProductsAdminPage(model),
-      PRODUCTSROUTE: (BuildContext context) => ProductsPage(model),
+      // AUTHROUTE:
+      // (BuildContext context) => ScopedModelDescendant(
+      //       builder: (BuildContext context, _, MainModel model) {
+      //         return model.user == null ? AuthPage() : ProductsPage(model);
+      //       },
+      //     ),
+      AUTHROUTE: (BuildContext context) =>
+          !_isAuthenticated ? AuthPage() : ProductsPage(model),
+      ADMINROUTE: (BuildContext context) =>
+          !_isAuthenticated ? AuthPage() : ProductsAdminPage(model),
+      // PRODUCTSROUTE: (BuildContext context) => ProductsPage(model),
     };
   }
 }

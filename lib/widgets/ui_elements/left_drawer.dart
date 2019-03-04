@@ -60,7 +60,7 @@ class LeftDrawer extends StatelessWidget {
       leading: Icon(Icons.shop),
       title: Text('Products'),
       onTap: () {
-        Navigator.pushReplacementNamed(context, PRODUCTSROUTE);
+        Navigator.pushReplacementNamed(context, AUTHROUTE);
       },
     );
   }

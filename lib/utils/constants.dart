@@ -19,6 +19,8 @@ const String PASSWORDPROMPT = 'password:';
 // for firebase api
 const String FB_APIKEY = 'AIzaSyAp6DJzAFqy6zaKhThrFeT4dhnzUsm0-Fo';
 const String FB_EMAIL = 'email';
+const String FB_EXPIRESIN = 'expiresIn';
+const String FB_EXPIRYTIME = 'expiryTime';
 const String FB_IDTOKEN = 'idToken';
 const String FB_LOCALID = 'localId';
 const String FB_REFRESCTOKEN = 'refreshToken';
