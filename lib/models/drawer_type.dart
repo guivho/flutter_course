@@ -1,0 +1,4 @@
+enum DrawerType {
+  fromListToAdmin,
+  fromAdminToList,
+}

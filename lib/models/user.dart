@@ -4,26 +4,27 @@ import '../utils/constants.dart';
 class User {
   final String userId;
   final String email;
-  final String password;
+  final String token;
 
   User({
     @required this.userId,
-    @required this.password,
     @required this.email,
+    @required this.token,
   });
 
-  User.fromJson(dynamic userData, String password)
+  User.fromJson(dynamic userData)
       : // userData is really a Map<String, dynamic>
+        // from Firebase response after signing up
         userId = userData[FB_LOCALID],
         email = userData[FB_EMAIL],
-        password = password;
+        token = userData[FB_IDTOKEN];
 
   @override
   toString() {
     return '''
 userId: '$userId',
 email: '$email',
-password: '$password',
+token: '$token',
 ''';
   }
 }

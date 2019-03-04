@@ -3,8 +3,8 @@ import 'dart:convert';
 
 import 'package:http/http.dart' as http;
 import 'package:scoped_model/scoped_model.dart';
-import 'package:uuid/uuid.dart';
 
+import '../models/auth_mode.dart';
 import '../models/fb_auth_data.dart';
 import '../models/form_data.dart';
 import '../models/product.dart';
@@ -18,17 +18,6 @@ mixin ConnectedProductsModel on Model {
 
   bool get isLoading {
     return _isLoading;
-  }
-
-  // Hack: restarting app looses _authenticatedUser
-  User get authenticatedUser {
-    return _authenticatedUser != null
-        ? _authenticatedUser
-        : User(
-            userId: Uuid().v1(),
-            email: 'unknown',
-            password: 'not relevant',
-          );
   }
 }
 
@@ -54,10 +43,11 @@ mixin ProductsModel on ConnectedProductsModel {
     _isLoading = true;
     notifyListeners();
     final Map<String, dynamic> productData = formData.toProductData(
-        authenticatedUser.email, authenticatedUser.userId);
+        _authenticatedUser.email, _authenticatedUser.userId);
     print('productData: $productData');
     return http
-        .post(PRODUCTSURL, body: json.encode(productData))
+        .post('$PRODUCTSURL?auth=${_authenticatedUser.token}',
+            body: json.encode(productData))
         .then((http.Response response) {
       final bool ok = response.statusCode == 200 || response.statusCode == 201;
       if (ok) {
@@ -98,7 +88,9 @@ mixin ProductsModel on ConnectedProductsModel {
     notifyListeners();
     print('[model] fetchProducts');
     try {
-      final http.Response response = await http.get(PRODUCTSURL);
+      final String url = '$PRODUCTSURL?auth=${_authenticatedUser.token}';
+      final http.Response response = await http.get(url);
+      print('statuscode: ${response.statusCode} from url: $url');
       if (response.statusCode != 200 && response.statusCode != 201) {
         print('(fetchProducts) statusCode: ${response.statusCode}');
         _isLoading = false;
@@ -144,7 +136,8 @@ mixin ProductsModel on ConnectedProductsModel {
     notifyListeners();
     final Map<String, dynamic> productData = product.toProductData();
     return http
-        .put('$DBSERVER$PRODUCTS/${product.productId}$JSON',
+        .put(
+            '$DBSERVER$PRODUCTS/${product.productId}$JSON?auth=${_authenticatedUser.token}',
             body: json.encode(productData))
         .then((http.Response response) {
       if (response.statusCode != 200 && response.statusCode != 201) {
@@ -167,7 +160,8 @@ mixin ProductsModel on ConnectedProductsModel {
     _isLoading = true;
     notifyListeners();
     return http
-        .delete('$DBSERVER$PRODUCTS/$productId$JSON')
+        .delete(
+            '$DBSERVER$PRODUCTS/$productId$JSON?auth=${_authenticatedUser.token}')
         .then((http.Response response) {
       if (response.statusCode != 200 && response.statusCode != 201) {
         print('(deleteProduct) statusCode: ${response.statusCode}');
@@ -205,8 +199,11 @@ mixin UsersModel on ConnectedProductsModel {
     bool isOk = true;
     String message = 'Authentication succeeded!';
     final Map<String, dynamic> responseData = json.decode(response.body);
+    print("responseData: $responseData");
     if (response.statusCode == 200 && responseData.containsKey(FB_IDTOKEN)) {
       final dynamic userData = json.decode(response.body);
+      _authenticatedUser = User.fromJson(userData);
+      print('_authenticated_user: $_authenticatedUser');
     } else {
       isOk = false;
       if (responseData['error']['message'] == 'EMAIL_NOT_FOUND') {

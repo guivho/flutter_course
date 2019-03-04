@@ -1,0 +1,4 @@
+enum CardType {
+  list,
+  info,
+}

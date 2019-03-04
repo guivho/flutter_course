@@ -4,7 +4,7 @@ import './product_card.dart';
 import '../../scoped-models/main_model.dart';
 import '../../widgets/ui_elements/no_products.dart';
 import '../../widgets/ui_elements/spinner.dart';
-import '../../utils/constants.dart';
+import '../../models/card_type.dart';
 import '../../utils/util.dart';
 import '../../models/product.dart';
 

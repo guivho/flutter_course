@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import './tabs/product_edit_tab.dart';
 import './tabs/product_list_tab.dart';
 import '../scoped-models/main_model.dart';
-import '../utils/constants.dart';
+import '../models/drawer_type.dart';
 import '../widgets/ui_elements/left_drawer.dart';
 
 class ProductsAdminPage extends StatelessWidget {

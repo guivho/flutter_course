@@ -5,7 +5,7 @@ import 'package:scoped_model/scoped_model.dart';
 
 import '../models/product.dart';
 import '../scoped-models/main_model.dart';
-import '../utils/constants.dart';
+import '../models/card_type.dart';
 import '../widgets/products/product_card.dart';
 
 class ProductPage extends StatelessWidget {

@@ -3,6 +3,7 @@ import 'package:scoped_model/scoped_model.dart';
 import './address_tag.dart';
 import './price_tag.dart';
 import '../ui_elements/title_default.dart';
+import '../../models/card_type.dart';
 import '../../models/product.dart';
 import '../../scoped-models/main_model.dart';
 import '../../utils/constants.dart';

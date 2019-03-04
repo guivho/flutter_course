@@ -29,18 +29,3 @@ const String FB_SIGNUP =
 const String FB_LOGIN =
     'https://www.googleapis.com/identitytoolkit/v3/relyingparty/verifyPassword?key=';
 const String FB_SUCCESS = 'success';
-
-enum DrawerType {
-  fromListToAdmin,
-  fromAdminToList,
-}
-
-enum CardType {
-  list,
-  info,
-}
-
-enum AuthMode {
-  Signup,
-  Login,
-}

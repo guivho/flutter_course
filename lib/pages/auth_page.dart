@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:scoped_model/scoped_model.dart';
 
+import '../models/auth_mode.dart';
 import '../models/login_data.dart';
 import '../scoped-models/main_model.dart';
 import '../utils/constants.dart';
