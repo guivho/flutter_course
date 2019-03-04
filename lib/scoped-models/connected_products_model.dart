@@ -231,6 +231,7 @@ mixin UsersModel on ConnectedProductsModel {
     SharedPreferences _prefs = await SharedPreferences.getInstance();
     final token = _prefs.getString(FB_IDTOKEN);
     bool ok = false;
+    _authenticatedUser = null;
     if (token != null) {
       final email = _prefs.getString(FB_EMAIL);
       final userId = _prefs.getString(FB_LOCALID);
@@ -243,5 +244,14 @@ mixin UsersModel on ConnectedProductsModel {
 
   User get user {
     return _authenticatedUser;
+  }
+
+  void logout() async {
+    _authenticatedUser = null;
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.remove(FB_IDTOKEN);
+    prefs.remove(FB_EMAIL);
+    prefs.remove(FB_LOCALID);
+    notifyListeners();
   }
 }

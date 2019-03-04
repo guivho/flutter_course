@@ -22,7 +22,7 @@ class ProductsAdminPage extends StatelessWidget {
 
   Widget buildScaffold(BuildContext context) {
     return Scaffold(
-      drawer: LeftDrawer(DrawerType.fromAdminToList),
+      drawer: LeftDrawer(DrawerType.fromAdminToList, model),
       appBar: AppBar(
         title: Text('Products Admin'),
         bottom: buildTabBar(),

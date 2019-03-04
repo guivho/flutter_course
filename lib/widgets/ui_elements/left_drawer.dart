@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
+
 import '../../models/drawer_type.dart';
+import '../../scoped-models/main_model.dart';
 import '../../utils/constants.dart';
 
 class LeftDrawer extends StatelessWidget {
   final DrawerType drawerType;
-  LeftDrawer(this.drawerType);
+  final MainModel model;
+  LeftDrawer(this.drawerType, this.model);
 
   @override
   Widget build(BuildContext context) {
@@ -15,6 +18,8 @@ class LeftDrawer extends StatelessWidget {
               automaticallyImplyLeading: false, // no hamburger here!
               title: Text('Choose')),
           _buildTile(context),
+          Divider(),
+          _buildLogoutTile(context),
         ],
       ),
     );
@@ -25,6 +30,17 @@ class LeftDrawer extends StatelessWidget {
       return _buildListProductsPageTile(context);
     else //if (drawerType == DrawerType.fromListToAdmin)
       return _buildManageProductsPageTile(context);
+  }
+
+  ListTile _buildLogoutTile(BuildContext context) {
+    return ListTile(
+      leading: Icon(Icons.exit_to_app),
+      title: Text('Logout'),
+      onTap: () {
+        model.logout();
+        Navigator.of(context).pushReplacementNamed(AUTHROUTE);
+      },
+    );
   }
 
   ListTile _buildManageProductsPageTile(BuildContext context) {

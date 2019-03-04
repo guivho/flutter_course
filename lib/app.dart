@@ -79,6 +79,9 @@ class _AppState extends State<App> {
               return model.user == null ? AuthPage() : ProductsPage(model);
             },
           ),
+      // Somehow this does not work:
+      // AUTHROUTE: (BuildContext context) =>
+      //     _model.user == null ? AuthPage() : ProductsPage(model),
       ADMINROUTE: (BuildContext context) => ProductsAdminPage(model),
       PRODUCTSROUTE: (BuildContext context) => ProductsPage(model),
     };

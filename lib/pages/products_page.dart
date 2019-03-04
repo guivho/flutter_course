@@ -30,7 +30,7 @@ class _ProductsPageState extends State<ProductsPage> {
   Widget build(BuildContext context) {
     print('[products_page] Build');
     return Scaffold(
-      drawer: LeftDrawer(DrawerType.fromListToAdmin),
+      drawer: LeftDrawer(DrawerType.fromListToAdmin, widget.model),
       appBar: AppBar(
         title: Text('Products'),
         actions: <Widget>[
