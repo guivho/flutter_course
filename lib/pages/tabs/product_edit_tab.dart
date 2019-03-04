@@ -102,8 +102,10 @@ class _ProductEditTabState extends State<ProductEditTab> {
       decoration: InputDecoration(labelText: 'Title:'),
       initialValue: product == null ? '' : product.title,
       validator: (String value) {
-        if (value.isEmpty) return 'Please supply a title';
-        if (value.length < 5) return 'Title must be 5 characters or more';
+        if (value == null || value.trim().isEmpty)
+          return 'Please supply a title';
+        if (value.trim().length < 5)
+          return 'Title must be 5 characters or more';
       },
       onSaved: (String value) {
         _formData.title = value;
@@ -118,9 +120,11 @@ class _ProductEditTabState extends State<ProductEditTab> {
       maxLength: 256,
       initialValue: product == null ? '' : product.description,
       validator: (String value) {
-        if (value.isEmpty) {
-          if (value.isEmpty) return 'Please supply a title';
-          if (value.length < 5) return 'Title must be 5 characters or more';
+        if (value == null || value.trim().isEmpty) {
+          return 'Please supply a title';
+        }
+        if (value.trim().length < 5) {
+          return 'Title must be 5 characters or more';
         }
       },
       onSaved: (String value) {

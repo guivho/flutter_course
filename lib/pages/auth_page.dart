@@ -135,7 +135,7 @@ class _AuthPageState extends State<AuthPage> {
       keyboardType: TextInputType.emailAddress,
       validator: Validators.emailAddress,
       onSaved: (String value) {
-        _loginData.email = value;
+        _loginData.email = value.trim();
       },
     );
   }
@@ -166,7 +166,7 @@ class _AuthPageState extends State<AuthPage> {
       controller: _passwordTextController,
       validator: Validators.password,
       onSaved: (String value) {
-        _loginData.password = value;
+        _loginData.password = value.trim();
       },
     );
   }

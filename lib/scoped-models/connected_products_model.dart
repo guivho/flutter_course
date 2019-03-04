@@ -274,6 +274,7 @@ mixin UserModel on ConnectedProductsModel {
     print('logout');
     _authenticatedUser = null;
     _authTimer.cancel();
+    _userSubject.add(false);
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     prefs.remove(FB_IDTOKEN);
     prefs.remove(FB_EMAIL);
@@ -282,9 +283,6 @@ mixin UserModel on ConnectedProductsModel {
   }
 
   void setAuthTimeout(int seconds) {
-    _authTimer = Timer(Duration(seconds: seconds), () {
-      logout();
-      _userSubject.add(false);
-    });
+    _authTimer = Timer(Duration(seconds: seconds), logout);
   }
 }
