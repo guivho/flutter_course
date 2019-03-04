@@ -3,6 +3,7 @@ import 'dart:convert';
 
 import 'package:http/http.dart' as http;
 import 'package:scoped_model/scoped_model.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../models/auth_mode.dart';
 import '../models/fb_auth_data.dart';
@@ -15,6 +16,7 @@ mixin ConnectedProductsModel on Model {
   final Map<String, Product> _products = {};
   User _authenticatedUser;
   bool _isLoading = false;
+  String token;
 
   bool get isLoading {
     return _isLoading;
@@ -203,6 +205,10 @@ mixin UsersModel on ConnectedProductsModel {
     if (response.statusCode == 200 && responseData.containsKey(FB_IDTOKEN)) {
       final dynamic userData = json.decode(response.body);
       _authenticatedUser = User.fromJson(userData);
+      final SharedPreferences prefs = await SharedPreferences.getInstance();
+      prefs.setString(FB_IDTOKEN, userData[FB_IDTOKEN]);
+      prefs.setString(FB_EMAIL, userData[FB_EMAIL]);
+      prefs.setString(FB_LOCALID, userData[FB_LOCALID]);
       print('_authenticated_user: $_authenticatedUser');
     } else {
       isOk = false;
@@ -219,5 +225,23 @@ mixin UsersModel on ConnectedProductsModel {
     _isLoading = false;
     notifyListeners();
     return {FB_SUCCESS: isOk, 'message': message};
+  }
+
+  Future<bool> autoAuthenticate() async {
+    SharedPreferences _prefs = await SharedPreferences.getInstance();
+    final token = _prefs.getString(FB_IDTOKEN);
+    bool ok = false;
+    if (token != null) {
+      final email = _prefs.getString(FB_EMAIL);
+      final userId = _prefs.getString(FB_LOCALID);
+      _authenticatedUser = User(email: email, token: token, userId: userId);
+      ok = true;
+    }
+    notifyListeners();
+    return ok;
+  }
+
+  User get user {
+    return _authenticatedUser;
   }
 }

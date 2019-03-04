@@ -15,14 +15,21 @@ class App extends StatefulWidget {
 }
 
 class _AppState extends State<App> {
+  final MainModel _model = MainModel();
+
+  @override
+  void initState() {
+    _model.autoAuthenticate();
+    super.initState();
+  }
+
   @override
   //final String _product = 'Food tester';
   Widget build(BuildContext context) {
     print('[app] build');
-    final MainModel model = MainModel();
     return ScopedModel<MainModel>(
-      model: model,
-      child: _buildMaterialApp(model),
+      model: _model,
+      child: _buildMaterialApp(_model),
     );
   }
 
@@ -67,9 +74,13 @@ class _AppState extends State<App> {
   Map<String, WidgetBuilder> defineRoutes(
       BuildContext context, MainModel model) {
     return {
+      AUTHROUTE: (BuildContext context) => ScopedModelDescendant(
+            builder: (BuildContext context, _, MainModel model) {
+              return model.user == null ? AuthPage() : ProductsPage(model);
+            },
+          ),
       ADMINROUTE: (BuildContext context) => ProductsAdminPage(model),
       PRODUCTSROUTE: (BuildContext context) => ProductsPage(model),
-      AUTHROUTE: (BuildContext context) => AuthPage(),
     };
   }
 }
