@@ -12,6 +12,7 @@ const String PRODUCTS = 'products';
 const String PRODUCTSROUTE = '/$PRODUCTS';
 
 const String PRODUCTSURL = '$DBSERVER$PRODUCTS$JSON';
+const String FAVUSERS = 'favusers';
 
 const String EMAILPROMPT = 'Email:';
 const String PASSWORDPROMPT = 'password:';

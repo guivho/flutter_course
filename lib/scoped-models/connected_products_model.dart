@@ -125,8 +125,31 @@ mixin ProductsModel on ConnectedProductsModel {
     return null;
   }
 
-  Future<bool> toggleFavorite(String productId) {
-    return _updateProduct(Product.favoriteToggled(_products[productId]));
+  Future<bool> toggleFavorite(String productId) async {
+    // optimistic update: update local copy before server update
+    bool updated =
+        await _updateProduct(Product.favoriteToggled(_products[productId]));
+    if (!updated) return false; // optimistic update failed
+    print('_updated product: ${_products[productId]}');
+    final bool newFavoriteStatus = _products[productId].isFavorite;
+    http.Response response;
+    if (newFavoriteStatus) {
+      // add user to FAVUSERS
+      response = await http.put(
+          '$DBSERVER$PRODUCTS/$productId/$FAVUSERS/${_authenticatedUser.userId}$JSON?auth=${_authenticatedUser.token}',
+          body: json.encode(true));
+    } else {
+      response = await http.delete(
+          '$DBSERVER$PRODUCTS/$productId/$FAVUSERS/${_authenticatedUser.userId}$JSON?auth=${_authenticatedUser.token}');
+    }
+    if (response.statusCode != 200 && response.statusCode != 201) {
+      print(
+          '(toggleFavorite to $newFavoriteStatus for user ${_authenticatedUser.userId}) statusCode: ${response.statusCode}');
+      // undo optimistic update
+      _updateProduct(Product.favoriteToggled(_products[productId]));
+      return false;
+    }
+    return true;
   }
 
   Future<bool> updateProduct(String productId, FormData formData) {
@@ -143,8 +166,8 @@ mixin ProductsModel on ConnectedProductsModel {
             '$DBSERVER$PRODUCTS/${product.productId}$JSON?auth=${_authenticatedUser.token}',
             body: json.encode(productData))
         .then((http.Response response) {
+      print('(updateProduct) statusCode: ${response.statusCode}');
       if (response.statusCode != 200 && response.statusCode != 201) {
-        print('(updateProduct) statusCode: ${response.statusCode}');
         return false;
       }
       _products[product.productId] = product;
