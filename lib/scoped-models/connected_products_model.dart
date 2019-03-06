@@ -15,12 +15,16 @@ import '../utils/constants.dart';
 
 mixin ConnectedProductsModel on Model {
   final Map<String, Product> _products = {};
-  User _authenticatedUser;
+  User _user;
   bool _isLoading = false;
   String token;
 
   bool get isLoading {
     return _isLoading;
+  }
+
+  User get user {
+    return _user;
   }
 }
 
@@ -36,7 +40,7 @@ mixin ProductsModel on ConnectedProductsModel {
 
   List<Product> get displayedProducts {
     final List<Product> products = _showFavoritesOnly
-        ? List.from(_products.values.where((p) => p.isFavorite == true))
+        ? List.from(_products.values.where((p) => p.isFavoredBy(_user.userId)))
         : List.from(_products.values);
     print('displayedProducts: $products');
     return products;
@@ -45,11 +49,11 @@ mixin ProductsModel on ConnectedProductsModel {
   Future<bool> addProduct(FormData formData) {
     _isLoading = true;
     notifyListeners();
-    final Map<String, dynamic> productData = formData.toProductData(
-        _authenticatedUser.email, _authenticatedUser.userId);
+    final Map<String, dynamic> productData =
+        formData.toJson(_user.email, _user.userId);
     print('productData: $productData');
     return http
-        .post('$PRODUCTSURL?auth=${_authenticatedUser.token}',
+        .post('$PRODUCTSURL?auth=${_user.token}',
             body: json.encode(productData))
         .then((http.Response response) {
       final bool ok = response.statusCode == 200 || response.statusCode == 201;
@@ -58,7 +62,7 @@ mixin ProductsModel on ConnectedProductsModel {
         final Map<String, dynamic> jsonData = json.decode(response.body);
         print('jsonData: $jsonData');
         final Product newProduct =
-            Product.fromJson(jsonData[NAME], productData);
+            Product.fromJson(jsonData[NAME], productData, _user.userId);
         print('newProduct: $newProduct');
         _products[newProduct.productId] = newProduct;
         print('_products: $_products');
@@ -91,9 +95,9 @@ mixin ProductsModel on ConnectedProductsModel {
     notifyListeners();
     print('[model] fetchProducts');
     try {
-      final String url = '$PRODUCTSURL?auth=${_authenticatedUser.token}';
+      final String url = '$PRODUCTSURL?auth=${_user.token}';
       final http.Response response = await http.get(url);
-      print('statuscode: ${response.statusCode} from url: $url');
+      print('statuscode: ${response.statusCode} from url: $PRODUCTSURL');
       if (response.statusCode != 200 && response.statusCode != 201) {
         print('(fetchProducts) statusCode: ${response.statusCode}');
         _isLoading = false;
@@ -104,7 +108,8 @@ mixin ProductsModel on ConnectedProductsModel {
       _removeAllProducts();
       if (productListData != null) {
         productListData.forEach((String productId, dynamic productData) {
-          _products[productId] = Product.fromJson(productId, productData);
+          _products[productId] =
+              Product.fromJson(productId, productData, _user.userId);
         });
       }
       _isLoading = false;
@@ -126,30 +131,12 @@ mixin ProductsModel on ConnectedProductsModel {
   }
 
   Future<bool> toggleFavorite(String productId) async {
+    _isLoading = true;
+    notifyListeners();
     // optimistic update: update local copy before server update
-    bool updated =
-        await _updateProduct(Product.favoriteToggled(_products[productId]));
-    if (!updated) return false; // optimistic update failed
-    print('_updated product: ${_products[productId]}');
-    final bool newFavoriteStatus = _products[productId].isFavorite;
-    http.Response response;
-    if (newFavoriteStatus) {
-      // add user to FAVUSERS
-      response = await http.put(
-          '$DBSERVER$PRODUCTS/$productId/$FAVUSERS/${_authenticatedUser.userId}$JSON?auth=${_authenticatedUser.token}',
-          body: json.encode(true));
-    } else {
-      response = await http.delete(
-          '$DBSERVER$PRODUCTS/$productId/$FAVUSERS/${_authenticatedUser.userId}$JSON?auth=${_authenticatedUser.token}');
-    }
-    if (response.statusCode != 200 && response.statusCode != 201) {
-      print(
-          '(toggleFavorite to $newFavoriteStatus for user ${_authenticatedUser.userId}) statusCode: ${response.statusCode}');
-      // undo optimistic update
-      _updateProduct(Product.favoriteToggled(_products[productId]));
-      return false;
-    }
-    return true;
+    final Product product =
+        _products[productId].toggleFavoriteFor(_user.userId);
+    return _updateProduct(product);
   }
 
   Future<bool> updateProduct(String productId, FormData formData) {
@@ -160,13 +147,12 @@ mixin ProductsModel on ConnectedProductsModel {
   Future<bool> _updateProduct(Product product) {
     _isLoading = true;
     notifyListeners();
-    final Map<String, dynamic> productData = product.toProductData();
+    final Map<String, dynamic> productData = product.toJson();
+    final String url = '$DBSERVER$PRODUCTS/${product.productId}$JSON';
     return http
-        .put(
-            '$DBSERVER$PRODUCTS/${product.productId}$JSON?auth=${_authenticatedUser.token}',
-            body: json.encode(productData))
+        .put('$url?auth=${_user.token}', body: json.encode(productData))
         .then((http.Response response) {
-      print('(updateProduct) statusCode: ${response.statusCode}');
+      print('(updateProduct) statusCode: ${response.statusCode} from $url');
       if (response.statusCode != 200 && response.statusCode != 201) {
         return false;
       }
@@ -186,8 +172,7 @@ mixin ProductsModel on ConnectedProductsModel {
     _isLoading = true;
     notifyListeners();
     return http
-        .delete(
-            '$DBSERVER$PRODUCTS/$productId$JSON?auth=${_authenticatedUser.token}')
+        .delete('$DBSERVER$PRODUCTS/$productId$JSON?auth=${_user.token}')
         .then((http.Response response) {
       if (response.statusCode != 200 && response.statusCode != 201) {
         print('(deleteProduct) statusCode: ${response.statusCode}');
@@ -216,7 +201,7 @@ mixin UserModel on ConnectedProductsModel {
   PublishSubject<bool> _userSubject = PublishSubject();
 
   User get user {
-    return _authenticatedUser;
+    return _user;
   }
 
   PublishSubject<bool> get userSubject {
@@ -239,7 +224,7 @@ mixin UserModel on ConnectedProductsModel {
     print("responseData: $responseData");
     if (response.statusCode == 200 && responseData.containsKey(FB_IDTOKEN)) {
       final dynamic userData = json.decode(response.body);
-      _authenticatedUser = User.fromJson(userData);
+      _user = User.fromJson(userData);
       final int seconds = int.parse(userData[FB_EXPIRESIN]);
       _userSubject.add(true);
       setAuthTimeout(seconds);
@@ -250,7 +235,7 @@ mixin UserModel on ConnectedProductsModel {
       prefs.setString(FB_EMAIL, userData[FB_EMAIL]);
       prefs.setString(FB_LOCALID, userData[FB_LOCALID]);
       prefs.setString(FB_EXPIRYTIME, expiryTime.toIso8601String());
-      print('_authenticated_user: $_authenticatedUser');
+      print('_authenticated_user: $_user');
     } else {
       isOk = false;
       if (responseData['error']['message'] == 'EMAIL_NOT_FOUND') {
@@ -272,7 +257,7 @@ mixin UserModel on ConnectedProductsModel {
     SharedPreferences _prefs = await SharedPreferences.getInstance();
     final token = _prefs.getString(FB_IDTOKEN);
     bool ok = false;
-    _authenticatedUser = null;
+    _user = null;
     if (token != null) {
       final DateTime expiryTime =
           DateTime.parse(_prefs.getString(FB_EXPIRYTIME));
@@ -285,7 +270,7 @@ mixin UserModel on ConnectedProductsModel {
       setAuthTimeout(seconds);
       final email = _prefs.getString(FB_EMAIL);
       final userId = _prefs.getString(FB_LOCALID);
-      _authenticatedUser = User(email: email, token: token, userId: userId);
+      _user = User(email: email, token: token, userId: userId);
       _userSubject.add(true);
       ok = true;
     }
@@ -295,7 +280,7 @@ mixin UserModel on ConnectedProductsModel {
 
   void logout() async {
     print('logout');
-    _authenticatedUser = null;
+    _user = null;
     _authTimer.cancel();
     _userSubject.add(false);
     final SharedPreferences prefs = await SharedPreferences.getInstance();

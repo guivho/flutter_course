@@ -43,7 +43,7 @@ class ProductsAdminPage extends StatelessWidget {
   TabBarView buildTabBarView() {
     return TabBarView(
       children: <Widget>[
-        ProductEditTab(null),
+        ProductEditTab(null, model.user),
         ProductListTab(model),
       ],
     );

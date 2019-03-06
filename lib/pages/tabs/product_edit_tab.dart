@@ -3,22 +3,31 @@ import 'package:scoped_model/scoped_model.dart';
 
 import '../../models/form_data.dart';
 import '../../models/product.dart';
+import '../../models/user.dart';
 import '../../scoped-models/main_model.dart';
 import '../../utils/constants.dart';
 import '../../utils/util.dart';
 
 class ProductEditTab extends StatefulWidget {
   final Product product;
+  // final String userId;
+  final User user;
 
-  ProductEditTab(this.product);
+  ProductEditTab(this.product, this.user); //this.userId);
 
   @override
   _ProductEditTabState createState() => new _ProductEditTabState();
 }
 
 class _ProductEditTabState extends State<ProductEditTab> {
-  final FormData _formData = FormData();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  FormData _formData;
+
+  @override
+  void initState() {
+    _formData = FormData(widget.product, widget.user);
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {

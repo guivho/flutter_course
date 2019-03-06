@@ -35,7 +35,7 @@ class LeftDrawer extends StatelessWidget {
   ListTile _buildLogoutTile(BuildContext context) {
     return ListTile(
       leading: Icon(Icons.exit_to_app),
-      title: Text('Logout'),
+      title: Text('Logout ${model.user.email}'),
       onTap: () {
         model.logout();
         Navigator.of(context).pushReplacementNamed(AUTHROUTE);

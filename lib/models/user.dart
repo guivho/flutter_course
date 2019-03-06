@@ -22,9 +22,9 @@ class User {
   @override
   toString() {
     return '''
-userId: '$userId',
-email: '$email',
-token: '$token',
+$U_USERID: '$userId',
+$U_EMAIL: '$email',
+$U_TOKEN: '$token',
 ''';
   }
 }

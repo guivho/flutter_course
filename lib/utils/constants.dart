@@ -12,7 +12,7 @@ const String PRODUCTS = 'products';
 const String PRODUCTSROUTE = '/$PRODUCTS';
 
 const String PRODUCTSURL = '$DBSERVER$PRODUCTS$JSON';
-const String FAVUSERS = 'favusers';
+const String FAVOREDBY = 'favoredby';
 
 const String EMAILPROMPT = 'Email:';
 const String PASSWORDPROMPT = 'password:';
@@ -32,3 +32,19 @@ const String FB_SIGNUP =
 const String FB_LOGIN =
     'https://www.googleapis.com/identitytoolkit/v3/relyingparty/verifyPassword?key=';
 const String FB_SUCCESS = 'success';
+
+const String P_DESCRIPTION = 'description';
+const String P_FAVOREDBY = 'favoredBy';
+const String P_IMAGEURL = 'imageUrl';
+const String P_LOCATION = 'location';
+const String P_PRICE = 'price';
+const String P_PRODUCTID = 'productId';
+const String P_TITLE = 'title';
+const String P_USEREMAIL = 'userEmail';
+const String P_USERID = 'userId';
+const String U_USERID = 'userId';
+const String U_EMAIL = 'email';
+const String U_TOKEN = 'token';
+
+const String P_CLOSESEP = '}';
+const String P_OPENSEP = '{';

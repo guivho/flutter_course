@@ -86,7 +86,7 @@ class _ProductListTabState extends State<ProductListTab> {
         Navigator.of(context).push(
           MaterialPageRoute(
             builder: (BuildContext context) {
-              return ProductEditTab(product);
+              return ProductEditTab(product, model.user);
             },
           ),
         )
