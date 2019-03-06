@@ -31,12 +31,12 @@ class _ProductListTabState extends State<ProductListTab> {
       builder: (BuildContext context, Widget child, MainModel model) {
         Widget content = model.isLoading
             ? Spinner()
-            : model.allProducts.length <= 0
+            : model.myProducts.length <= 0
                 ? NoProducts()
                 : ListView.builder(
-                    itemCount: model.allProducts.length,
+                    itemCount: model.myProducts.length,
                     itemBuilder: (BuildContext context, int index) {
-                      return _buildDismissible(model, model.allProducts[index]);
+                      return _buildDismissible(model, model.myProducts[index]);
                     },
                   );
         return RefreshIndicator(

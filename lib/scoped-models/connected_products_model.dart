@@ -40,10 +40,16 @@ mixin ProductsModel on ConnectedProductsModel {
 
   List<Product> get displayedProducts {
     final List<Product> products = _showFavoritesOnly
-        ? List.from(_products.values.where((p) => p.isFavoredBy(_user.userId)))
+        ? List.from(
+            _products.values.where((Product p) => p.isFavoredBy(_user.userId)))
         : List.from(_products.values);
     print('displayedProducts: $products');
     return products;
+  }
+
+  List<Product> get myProducts {
+    return List.from(
+        _products.values.where((Product p) => p.userId == _user.userId));
   }
 
   Future<bool> addProduct(FormData formData) {
