@@ -136,6 +136,42 @@ mixin ProductsModel on ConnectedProductsModel {
     return null;
   }
 
+  Future<bool> toggleWished(String productId) async {
+    _isLoading = true;
+    notifyListeners();
+    // the isWished is never written to disk
+    // only the Wishers/userid boolean
+    print('will toggle wished for ${_products[productId]}');
+    bool newWishedStatus = !_products[productId].isWished;
+    String url =
+        '$DBSERVER$PRODUCTS/$productId/$P_WISHERS/${_user.userId}$JSON';
+    print('url:$url');
+    print('newWishedStatus:$newWishedStatus');
+    final String body = json.encode(true);
+    print('json.encode(true) => $body');
+    http.Response response;
+    if (newWishedStatus) {
+      //push userId to Wishers
+      print('going to post new wisher');
+      response =
+          // await http.post('$url?auth=${_user.token}', body: json.encode(true));
+          await http.put('$url?auth=${_user.token}', body: body);
+    } else {
+      //remove user id from wishers
+      print('deleting old wisher');
+      response = await http.delete('$url?auth=${_user.token}');
+    }
+    bool ok = response.statusCode == 200 || response.statusCode == 201;
+    print('ok:$ok statusCode:${response.statusCode}');
+    if (ok) {
+      _products[productId].isWished = !_products[productId].isWished;
+    }
+    _isLoading = false;
+    print('done toggle wished for ${_products[productId]}');
+    notifyListeners();
+    return ok;
+  }
+
   Future<bool> toggleFavorite(String productId) async {
     _isLoading = true;
     notifyListeners();

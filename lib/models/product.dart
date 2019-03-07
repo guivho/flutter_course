@@ -3,6 +3,9 @@ import 'package:flutter/material.dart';
 import './form_data.dart';
 import '../utils/constants.dart';
 
+// FavoredBy works as required
+// isWished is proof of concept of better implementation
+
 class Product {
   final String productId;
   final String title;
@@ -13,6 +16,7 @@ class Product {
   final String userId;
   final String userEmail;
   final String favoredBy;
+  bool isWished;
 
   Product({
     @required this.productId,
@@ -24,6 +28,7 @@ class Product {
     @required this.favoredBy,
     @required this.userId,
     @required this.userEmail,
+    @required this.isWished,
   });
 
   Product toggleFavoriteFor(String userId) {
@@ -48,6 +53,7 @@ class Product {
       favoredBy: favor,
       userId: this.userId,
       userEmail: this.userEmail,
+      isWished: this.isWished,
     );
   }
 
@@ -75,7 +81,8 @@ class Product {
         location = formData.location,
         favoredBy = formData.favoredBy,
         userId = formData.userId,
-        userEmail = formData.userEmail;
+        userEmail = formData.userEmail,
+        isWished = formData.isWished;
 
   Product.fromJson(
       String productId, Map<String, dynamic> parsedJson, String userId)
@@ -88,7 +95,11 @@ class Product {
         location = parsedJson[P_LOCATION],
         favoredBy = parsedJson[P_FAVOREDBY],
         userId = parsedJson[P_USERID],
-        userEmail = parsedJson[P_USEREMAIL];
+        userEmail = parsedJson[P_USEREMAIL],
+        isWished = parsedJson[P_WISHERS] == null
+            ? false
+            : (parsedJson[P_WISHERS] as Map<String, dynamic>)
+                .containsKey(userId);
 
   Map<String, dynamic> toJson() {
     return {
@@ -115,6 +126,7 @@ class Product {
   $P_FAVOREDBY:'$favoredBy',
   $P_USERID:'$userId',
   $P_USEREMAIL:'$userEmail',
+  $P_ISWISHED:$isWished,
 }''';
   }
 

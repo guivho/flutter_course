@@ -13,6 +13,7 @@ class FormData {
   String favoredBy;
   String userId;
   String userEmail;
+  bool isWished;
 
   FormData(Product product, User user) {
     this.title = product == null ? '' : product.title;
@@ -24,6 +25,7 @@ class FormData {
     this.favoredBy = product == null ? '' : product.favoredBy;
     this.userId = product == null ? user.userId : product.userId;
     this.userEmail = product == null ? user.email : product.userEmail;
+    this.isWished = product == null ? false : product.isWished;
   }
 
   // used to create json input before adding product

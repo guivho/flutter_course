@@ -101,6 +101,7 @@ class ProductCard extends StatelessWidget {
       children: <Widget>[
         _infoOrDeleteButton,
         _buildFavoriteButton(context),
+        _buildWishedButton(context),
       ],
     );
   }
@@ -133,6 +134,24 @@ class ProductCard extends StatelessWidget {
           iconSize: 30.0,
           onPressed: () {
             model.toggleFavorite(product.productId).then((bool ok) {
+              if (!ok) Util.showTryAgainDialog(context);
+            });
+          },
+        );
+      },
+    );
+  }
+
+  Widget _buildWishedButton(BuildContext context) {
+    if (product == null) return null;
+    return ScopedModelDescendant(
+      builder: (BuildContext context, Widget child, MainModel model) {
+        return IconButton(
+          icon: Icon(product.isWished ? Icons.favorite : Icons.favorite_border),
+          color: Colors.green,
+          iconSize: 30.0,
+          onPressed: () {
+            model.toggleWished(product.productId).then((bool ok) {
               if (!ok) Util.showTryAgainDialog(context);
             });
           },

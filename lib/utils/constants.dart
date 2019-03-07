@@ -42,6 +42,9 @@ const String P_PRODUCTID = 'productId';
 const String P_TITLE = 'title';
 const String P_USEREMAIL = 'userEmail';
 const String P_USERID = 'userId';
+const String P_ISWISHED = 'isWished';
+const String P_WISHERS = 'wishers';
+
 const String U_USERID = 'userId';
 const String U_EMAIL = 'email';
 const String U_TOKEN = 'token';
